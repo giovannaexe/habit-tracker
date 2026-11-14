@@ -373,7 +373,7 @@ const Store={
       if(changed||!S.meta)onLoaded();
     },err=>{
       clearTimeout(timer);setSync('error');
-      if(this.mode==='fb'){toast('Erro ao acessar seus dados ('+(err&&err.code||'?')+'). Tente sair e entrar de novo.');return}
+      if(this.mode==='fb'){if(!S.meta){document.getElementById('main').innerHTML=`<div class="loading"><div>⚠️<br>Não consegui acessar seus dados (${esc(err&&err.code||'erro')}).<br><br><button class="btn pri" onclick="location.reload()">Tentar de novo</button> <button class="btn" data-a="logout">Sair</button></div></div>`}else toast('Erro de sincronização ('+(err&&err.code||'?')+'). Recarregue o app.');return}
       toast('Não consegui sincronizar agora. Usando os dados deste aparelho.');
       if(!S.meta){this.mode='local';this.loadLocal();onLoaded()}
     });
