@@ -335,7 +335,7 @@ let S={meta:null,months:{}};
 const UI={view:'hoje',date:today(),period:'month',anchor:today(),gScope:'all',gAnchor:today(),showOff:false,pendingRender:false,onboardingShown:false};
 
 function defaultSettings(){return {weekStart:1,groupBy:'cat'}}
-const DEFAULT_AREAS=[['saude','Saúde','💪'],['autocuidado','Autocuidado','🧴'],['mente','Mente','🧠'],['estudos','Estudos','📚'],['espiritualidade','Espiritualidade','🙏'],['financas','Finanças','💰'],['autocontrole','Autocontrole','📵'],['rotina','Rotina','⏰']].map(([id,name,icon])=>({id,name,icon}));
+const DEFAULT_AREAS=[['saude','Saúde','💪'],['autocuidado','Autocuidado','🧴'],['mente','Mente','🧠'],['estudos','Estudos','📚'],['espiritualidade','Espiritualidade','🙏'],['financas','Finanças','💰'],['autocontrole','Autocontrole','📵'],['rotina','Rotina','⏰'],['casa','Casa','🏠']].map(([id,name,icon])=>({id,name,icon}));
 const SEED_AREA={'acordar cedo':'rotina','skincare diurna':'autocuidado','skincare noturna':'autocuidado','ler 10 páginas':'mente','sem redes sociais antes das 8h':'autocontrole','alimentação limpa / déficit calórico':'saude','não gastar sem necessidade':'financas','estudar p/ concurso':'estudos','cardio / caminhada / bike':'saude','treino academia/casa':'saude','-1h de tela (downscrolling)':'autocontrole','beber água':'saude','nofap':'autocontrole','creatina e vitaminas':'saude','planejar o dia seguinte':'rotina','dormir cedo (até 22:30)':'rotina','oração, gratidão e bíblia':'espiritualidade'};
 function areas(){return S.meta.areas||[]}
 function areaOf(id){return areas().find(a=>a.id===id)}
@@ -539,32 +539,66 @@ function targetSummary(h,v){
 }
 
 /* ============ hábitos iniciais (da planilha) ============ */
-const SKIN_AM='Limpeza com sabonete facial\nÁgua micelar\nVitamina C\nProtetor solar';
-function seedHabits(){
-  const t=today();const all=[0,1,2,3,4,5,6];
-  const mk=(name,icon,cat,type,o={})=>({id:newId(),name,icon,type,unit:o.unit||'',step:o.step||1,reminder:'',details:o.details||'',createdAt:t,archivedAt:null,
-    versions:[{from:t,category:cat,mode:o.mode||'daily',days:o.days||all.slice(),times:o.times||7,targets:o.targets||(o.target!=null?Array(7).fill(o.target):null)}]});
-  const list=[
-    mk('Acordar cedo','⏰','nf2','time',{targets:['07:00','05:00','05:00','05:00','05:00','05:00','07:00']}),
-    mk('Skincare diurna','🧴','ineg','check',{details:SKIN_AM}),
-    mk('Ler 10 páginas','📖','nf2','qty',{unit:'págs',step:5,target:10}),
-    mk('Sem redes sociais antes das 8h','📵','nf2','check'),
-    mk('Alimentação limpa / déficit calórico','🥗','nf2','check'),
-    mk('Não gastar sem necessidade','💰','nf2','check'),
-    mk('Estudar p/ concurso','📚','nf2','qty',{unit:'min',step:15,targets:[120,60,60,60,60,60,120]}),
-    mk('Cardio / caminhada / bike','🚴','nf2','check'),
-    mk('Treino academia/casa','🏋️','nf2','check',{mode:'weekly',times:6}),
-    mk('-1h de tela (downscrolling)','📱','nf2','check'),
-    mk('Beber água','💧','ineg','qty',{unit:'ml',step:250,target:2500}),
-    mk('NoFap','🛡️','ineg','check'),
-    mk('Creatina e vitaminas','💊','ineg','check'),
-    mk('Skincare noturna','🌙','ineg','check'),
-    mk('Planejar o dia seguinte','📝','nf2','check'),
-    mk('Dormir cedo (até 22:30)','😴','ineg','check'),
-    mk('Oração, gratidão e Bíblia','🙏','ineg','check')
-  ];
-  list.forEach((h,i)=>{h.order=i;h.area=SEED_AREA[h.name.toLowerCase()]||''});
-  return list;
+/* ============ modelo de hábitos (base: os 50 hábitos mais acompanhados) ============ */
+// [nome, ícone, área, prioridade, tipo, opções]
+const TEMPLATES=[
+ ['Exercitar-se','🏃','saude','nf2','check'],
+ ['Beber água','💧','saude','ineg','qty',{unit:'ml',step:250,target:2000}],
+ ['Ler','📖','mente','nf2','qty',{unit:'págs',step:5,target:10}],
+ ['Caminhar','👟','saude','nf2','qty',{unit:'passos',step:1000,target:8000}],
+ ['Meditar','🧘','mente','nf2','qty',{unit:'min',step:5,target:10}],
+ ['Escrever no diário','📓','mente','nf2','check'],
+ ['Acordar cedo','⏰','rotina','nf2','time',{target:'06:00'}],
+ ['Yoga','🧘‍♀️','saude','nf2','check',{mode:'weekly',times:3}],
+ ['Sem redes sociais','📵','autocontrole','nf2','check'],
+ ['Escovar os dentes','🪥','autocuidado','ineg','check'],
+ ['Limpar a casa','🧹','casa','nf2','check',{mode:'weekly',times:2}],
+ ['Beber menos álcool','🍷','autocontrole','nf2','check'],
+ ['Correr','🏃‍♀️','saude','nf2','check',{mode:'weekly',times:3}],
+ ['Musculação','🏋️','saude','nf2','check',{mode:'weekly',times:4}],
+ ['Estudar','📚','estudos','nf2','qty',{unit:'min',step:15,target:60}],
+ ['Alongar','🤸','saude','nf2','qty',{unit:'min',step:5,target:10}],
+ ['Menos tempo de tela','📱','autocontrole','nf2','check'],
+ ['Fumar menos','🚭','autocontrole','nf2','check'],
+ ['Lavar roupa','🧺','casa','nf2','check',{mode:'weekly',times:2}],
+ ['Menos açúcar','🍬','saude','nf2','check'],
+ ['Usar fio dental','🦷','autocuidado','nf2','check'],
+ ['Dormir cedo','😴','rotina','ineg','time',{target:'23:00'}],
+ ['Arrumar a cama','🛏️','rotina','nf2','check'],
+ ['Aprender um idioma','🗣️','estudos','nf2','qty',{unit:'min',step:5,target:15}],
+ ['Cardio','🚴','saude','nf2','check',{mode:'weekly',times:3}],
+ ['Tomar banho','🚿','autocuidado','ineg','check'],
+ ['Cozinhar','🍳','casa','nf2','check',{mode:'weekly',times:4}],
+ ['Aspirar a casa','🧽','casa','nf2','check',{mode:'weekly',times:1}],
+ ['Pilates','🤸‍♀️','saude','nf2','check',{mode:'weekly',times:2}],
+ ['Orar','🙏','espiritualidade','ineg','check'],
+ ['Lavar a louça','🍽️','casa','nf2','check'],
+ ['Praticar um instrumento','🎹','mente','nf2','qty',{unit:'min',step:10,target:30}],
+ ['Regar as plantas','🪴','casa','nf2','check',{mode:'weekly',times:3}],
+ ['Diário de gratidão','✨','espiritualidade','nf2','check'],
+ ['Aprender algo novo','💡','estudos','nf2','check'],
+ ['Comer frutas e verduras','🥗','saude','nf2','qty',{unit:'porções',step:1,target:5}],
+ ['Não cutucar a pele','✋','autocontrole','nf2','check'],
+ ['Tomar café da manhã','🥣','saude','nf2','check'],
+ ['Menos refrigerante','🥤','saude','nf2','check'],
+ ['Levar o lixo','🗑️','casa','nf2','check',{mode:'weekly',times:3}],
+ ['Skincare','🧴','autocuidado','nf2','check'],
+ ['Autorreflexão','🪞','mente','nf2','check',{mode:'weekly',times:1}],
+ ['Pedalar','🚲','saude','nf2','check',{mode:'weekly',times:3}],
+ ['Tomar vitaminas','💊','saude','ineg','check'],
+ ['Diário alimentar','🍎','saude','nf2','check'],
+ ['Respiração profunda','🌬️','mente','nf2','qty',{unit:'min',step:1,target:5}],
+ ['Tirar o pó','🪶','casa','nf2','check',{mode:'weekly',times:1}],
+ ['Afirmações','💬','mente','nf2','check'],
+ ['Passear com o cachorro','🐕','casa','nf2','check'],
+ ['Diário de sonhos','🌙','mente','nf2','check'],
+ ['Não gastar sem necessidade','💰','financas','nf2','check'],
+ ['Anotar os gastos do dia','🧾','financas','nf2','check']
+];
+function templateHabits(names){
+  const t=today(),all=[0,1,2,3,4,5,6];
+  return TEMPLATES.filter(x=>!names||names.has(x[0])).map(([name,icon,area,cat,type,o={}],i)=>({id:newId(),name,icon,type,area,unit:o.unit||'',step:o.step||1,reminder:'',details:'',createdAt:t,archivedAt:null,order:i,
+    versions:[{from:t,category:cat,mode:o.mode||'daily',days:all.slice(),times:o.times||7,targets:o.target!=null?Array(7).fill(o.target):null}]}));
 }
 
 /* ============ navegação ============ */
@@ -1026,38 +1060,35 @@ function openModal(html,onMount){
   r.querySelector('[data-ov]').addEventListener('click',e=>{if(e.target.hasAttribute('data-ov')&&!r.querySelector('[data-lock]'))closeModal()});
   if(onMount)onMount(r.querySelector('.modal'));
 }
-function closeModal(){document.getElementById('modal-root').innerHTML='';if(!S.meta&&Store.mode!=='loading'&&(Store.mode!=='fb'||FB.user)){showOnboarding();return}if(modalCleanup){modalCleanup();modalCleanup=null}if(UI.pendingRender){UI.pendingRender=false}render()}
+function closeModal(){document.getElementById('modal-root').innerHTML='';SETUP=null;if(!S.meta&&Store.mode!=='loading'&&(Store.mode!=='fb'||FB.user)){showOnboarding();return}if(modalCleanup){modalCleanup();modalCleanup=null}if(UI.pendingRender){UI.pendingRender=false}render()}
 function mHead(t,lock){return `<h2>${t}${lock?'<span data-lock></span>':`<button class="iconbtn" data-a="mclose" aria-label="Fechar">${ICONS.x}</button>`}</h2>`}
 
+let PICK=new Set();
 function showOnboarding(){
+  const groups=[...DEFAULT_AREAS].map(a=>({a,items:TEMPLATES.filter(x=>x[2]===a.id)})).filter(g=>g.items.length);
+  const n=PICK.size;
   openModal(`${mHead('Boas-vindas! 👋',true)}
-    <p class="muted" style="margin-bottom:16px">Este é o seu app de hábitos. Como você quer começar?</p>
-    <button class="btn pri full" data-a="ob-pick" style="margin-bottom:10px;padding:14px">Escolher hábitos de um modelo</button>
-    <button class="btn full" data-a="ob-empty" style="padding:14px;margin-bottom:10px">Começar do zero</button>
-    <button class="btn full" data-a="s-import" style="padding:14px">Importar um backup</button>
-    <p class="hint" style="margin-top:14px">Você pode editar, criar ou arquivar qualquer hábito depois, na aba Hábitos.</p>`);
-}
-let PICK=null;
-function openTemplatePicker(){
-  const list=seedHabits();if(!PICK)PICK=new Set(list.map(h=>h.name));
-  const groups=DEFAULT_AREAS.map(a=>({a,items:list.filter(h=>h.area===a.id)})).filter(g=>g.items.length);
-  openModal(`${mHead('Escolha seus hábitos',true)}
-    <p class="muted" style="margin-bottom:14px;font-size:13.5px">Marque os que fazem sentido para você. Depois dá para editar metas, frequência e prioridade de cada um, ou criar outros.</p>
-    <div class="row" style="margin-bottom:10px"><button class="btn sm" data-a="pk-all">Marcar todos</button><button class="btn sm" data-a="pk-none">Desmarcar todos</button></div>
-    ${groups.map(g=>`<div class="section-t" style="margin-top:14px">${esc(g.a.icon)} ${esc(g.a.name)}</div><div class="chips">${g.items.map(h=>`<button data-a="pk-tog" data-n="${esc(h.name)}" class="${PICK.has(h.name)?'on':''}">${esc(h.icon)} ${esc(h.name)}</button>`).join('')}</div>`).join('')}
-    <div class="actions"><button class="btn sm" data-a="pk-back">Voltar</button><span class="sp"></span><button class="btn pri" data-a="pk-go">Começar com ${PICK.size} ${PICK.size===1?'hábito':'hábitos'}</button></div>`);
+    <p class="muted" style="margin-bottom:6px;font-size:14px">Escolha os hábitos que quer incluir na sua rotina. No próximo passo você ajusta cada um (meta, frequência e prioridade).</p>
+    <p class="hint" style="margin-bottom:6px">Baseado nos 50 hábitos mais acompanhados em apps de hábitos. Dá para criar outros depois.</p>
+    ${groups.map(g=>`<div class="section-t" style="margin-top:16px">${esc(g.a.icon)} ${esc(g.a.name)}</div><div class="chips">${g.items.map(x=>`<button data-a="pk-tog" data-n="${esc(x[0])}" class="${PICK.has(x[0])?'on':''}">${esc(x[1])} ${esc(x[0])}</button>`).join('')}</div>`).join('')}
+    <div style="position:sticky;bottom:-20px;background:var(--surface);padding:14px 0 4px;margin-top:16px;border-top:1px solid var(--line);display:flex;gap:8px;align-items:center">
+      <button class="btn" data-a="ob-empty">Começar do zero</button><span style="flex:1"></span>
+      <button class="btn pri" data-a="pk-go" ${n?'':'disabled'}>${n?`Incluir ${n} e configurar`:'Escolha os hábitos'}</button>
+    </div>`);
 }
 function initMeta(withSeed,names){
-  let seed=withSeed?seedHabits():[];if(names)seed=seed.filter(h=>names.has(h.name)).map((h,i)=>(h.order=i,h));
+  const seed=withSeed?templateHabits(names):[];
   S.meta={v:1,habits:seed,goals:[],areas:clone(DEFAULT_AREAS),settings:Object.assign(defaultSettings(),{mig1:true,mig2:true}),createdAt:today()};
   Store.touch('meta');UI.onboardingShown=false;
   document.getElementById('modal-root').innerHTML='';
   UI.view=seed.length?'hoje':'habitos';render();
-  if(!seed.length)openHabitForm(null);
+  if(seed.length){SETUP={ids:seed.map(h=>h.id),i:0};openHabitForm(byId(SETUP.ids[0]))}
+  else openHabitForm(null);
 }
 
 /* ---- formulário de hábito ---- */
-let F=null;
+let F=null,SETUP=null;
+function setupNext(){if(!SETUP)return closeModal();SETUP.i++;if(SETUP.i>=SETUP.ids.length){SETUP=null;closeModal();toast('Tudo pronto! Bons hábitos 💪');return}openHabitForm(byId(SETUP.ids[SETUP.i]))}
 const EMOJIS=['💧','📖','📚','🏋️','🚴','🧘','🥗','💊','🧴','🌙','😴','⏰','📵','📱','💰','📝','🙏','🛡️','🎯','🎨','🎸','🧹','🌿','☀️'];
 function openHabitForm(h){
   const t=today();
@@ -1072,7 +1103,7 @@ function paintHabitForm(){
   const el=document.getElementById('hf');if(!el)return;
   const isNew=!F.id,tInput=F.type==='time'?'time':'number';
   const ord=settings().weekStart===1?[1,2,3,4,5,6,0]:[0,1,2,3,4,5,6];
-  el.innerHTML=`${mHead(isNew?'Novo hábito':'Editar hábito')}
+  el.innerHTML=`${SETUP?`<h2><span>Configurar hábito <small class="faint" style="font-size:14px">${SETUP.i+1} de ${SETUP.ids.length}</small></span><button class="btn sm" data-a="f-endsetup">Pular todos</button></h2><div class="bar" style="margin:-6px 0 16px"><i style="width:${(SETUP.i+1)/SETUP.ids.length*100}%"></i></div>`:mHead(isNew?'Novo hábito':'Editar hábito')}
   <div class="field"><label>Nome</label><input data-f="name" value="${esc(F.name)}" placeholder="Ex.: Beber água" maxlength="60"></div>
   <div class="field"><label>Ícone</label><div class="row"><input data-f="icon" value="${esc(F.icon)}" style="width:70px;text-align:center;font-size:20px" maxlength="4"><span class="hint" style="margin:0">Digite um emoji ou escolha abaixo</span></div>
     <div class="emojis">${EMOJIS.map(e=>`<button data-a="f-icon" data-e="${e}">${e}</button>`).join('')}</div></div>
@@ -1093,8 +1124,8 @@ function paintHabitForm(){
   <div class="field"><label>Lembrete</label><input data-f="reminder" type="time" value="${esc(F.reminder)}" style="width:140px"><div class="hint">O horário já fica salvo; as notificações começam a funcionar na etapa de lembretes.</div></div>
   ${!isNew?'<div class="hint" style="margin-bottom:4px">Mudanças em categoria, frequência e meta valem a partir de hoje. Os dias anteriores continuam com a regra antiga.</div>':''}
   <div class="actions">
-    ${!isNew?(F.confirmDel?`<button class="btn danger sm" data-a="f-del-yes">Excluir de vez</button><button class="btn sm" data-a="f-del-no">Cancelar</button>`:`<button class="btn sm" data-a="f-archive">Arquivar</button><button class="btn danger sm" data-a="f-del">Excluir</button>`):''}
-    <span class="sp"></span><button class="btn pri" data-a="f-save">${isNew?'Criar hábito':'Salvar'}</button>
+    ${!isNew&&!SETUP?(F.confirmDel?`<button class="btn danger sm" data-a="f-del-yes">Excluir de vez</button><button class="btn sm" data-a="f-del-no">Cancelar</button>`:`<button class="btn sm" data-a="f-archive">Arquivar</button><button class="btn danger sm" data-a="f-del">Excluir</button>`):''}
+    <span class="sp"></span>${SETUP?`<button class="btn" data-a="f-skip">Pular</button>`:''}<button class="btn pri" data-a="f-save">${SETUP?(SETUP.i+1<SETUP.ids.length?'Salvar e próximo':'Salvar e concluir'):isNew?'Criar hábito':'Salvar'}</button>
   </div>`;
 }
 function readTargets(){
@@ -1119,9 +1150,9 @@ function saveHabitForm(){
     const last=h.versions[h.versions.length-1];
     const same=JSON.stringify([last.category,last.mode,last.days,last.times,last.targets])===JSON.stringify([nv.category,nv.mode,nv.days,nv.times,nv.targets]);
     if(!same){if(last.from>=t)Object.assign(last,nv,{from:last.from});else h.versions.push({from:t,...nv})}
-    toast('Alterações salvas');
+    if(!SETUP)toast('Alterações salvas');
   }
-  Store.touch('meta');closeModal();
+  Store.touch('meta');if(SETUP)return setupNext();closeModal();
 }
 
 /* ---- formulário de meta ---- */
@@ -1242,12 +1273,10 @@ const A={
   hdown:el=>moveHabit(el.dataset.h,1),
   hrestore:el=>{const h=byId(el.dataset.h);h.archivedAt=null;Store.touch('meta');render();toast('Hábito reativado')},
   'ob-seed':()=>initMeta(true),
-  'ob-pick':()=>{PICK=null;openTemplatePicker()},
-  'pk-tog':el=>{const n=el.dataset.n;PICK.has(n)?PICK.delete(n):PICK.add(n);openTemplatePicker()},
-  'pk-all':()=>{PICK=new Set(seedHabits().map(h=>h.name));openTemplatePicker()},
-  'pk-none':()=>{PICK=new Set();openTemplatePicker()},
-  'pk-back':()=>showOnboarding(),
-  'pk-go':()=>initMeta(true,PICK),
+  'pk-tog':el=>{const n=el.dataset.n;PICK.has(n)?PICK.delete(n):PICK.add(n);el.classList.toggle('on',PICK.has(n));const k=PICK.size,b=document.querySelector('[data-a="pk-go"]');if(b){b.disabled=!k;b.textContent=k?`Incluir ${k} e configurar`:'Escolha os hábitos'}},
+  'pk-go':()=>{if(PICK.size)initMeta(true,PICK)},
+  'f-skip':()=>setupNext(),
+  'f-endsetup':()=>{SETUP=null;closeModal();toast('Você pode ajustar os hábitos quando quiser na aba Hábitos.')},
   'ob-empty':()=>initMeta(false),
   'f-icon':el=>{F.icon=el.dataset.e;paintHabitForm()},
   'f-set':el=>{const k=el.dataset.k,v=el.dataset.v;if(k==='type'&&v!==F.type){F.same=true;F.target=v==='time'?'06:00':'';F.targets=Array(7).fill(F.target)}F[k]=v;paintHabitForm()},
