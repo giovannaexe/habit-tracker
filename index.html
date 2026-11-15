@@ -235,6 +235,26 @@ body[data-theme=pirata] .home-hero{background:radial-gradient(120% 90% at 50% 0%
 .av-grid{display:grid;grid-template-columns:repeat(8,1fr);gap:6px}
 .av-grid button{font-size:24px;aspect-ratio:1;border-radius:12px;background:var(--card2);border:2px solid transparent}
 .av-grid button.on{border-color:var(--lime)}
+.yh{background:var(--card);border-radius:16px;overflow:hidden;margin-bottom:12px}
+.yh-head{display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--card2);cursor:pointer}
+.yh-head .ck{width:20px;height:20px;border-radius:50%;display:grid;place-items:center;flex-shrink:0}
+.yh-head .ck svg{width:12px;height:12px;color:#10121A}
+.yh-head .t{flex:1;min-width:0;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.yh-head .t span{font-weight:500;color:var(--muted)}
+.yh-head b{font-family:var(--num);font-size:17px}
+.yh-body{padding:10px 10px 12px}
+.yh-grid{display:grid;grid-template-rows:repeat(7,auto);grid-auto-flow:column;gap:2px}
+.yh-grid i{aspect-ratio:1;border-radius:2px;background:rgba(255,255,255,.05);display:block}
+.yh-grid i.fut{background:rgba(255,255,255,.025)}
+.yh-grid i.out{background:transparent}
+.yh-grid i.now{outline:1.5px solid var(--text);outline-offset:1px}
+.yh-half+.yh-half{margin-top:8px}
+.yh-meta{display:flex;justify-content:space-between;font-size:11.5px;color:var(--faint);margin-top:8px;gap:8px;flex-wrap:wrap}
+.yh-leg{display:inline-flex;align-items:center;gap:4px}
+.yh-leg i{width:9px;height:9px;border-radius:2px;display:inline-block}
+.colors{display:flex;gap:8px;flex-wrap:wrap}
+.colors button{width:30px;height:30px;border-radius:50%;border:3px solid transparent}
+.colors button.on{border-color:var(--text)}
 .toggle-more{width:100%;text-align:center;color:var(--faint);font-size:13px;padding:12px}
 /* journal */
 .moods{display:flex;gap:8px;margin:10px 0 12px}
@@ -1014,12 +1034,60 @@ function periodLabel(mode,a,b){
   if(mode==='month'){const A=parse(a);return `${cap(MON[A.getMonth()])} ${A.getFullYear()}`}
   return a.slice(0,4);
 }
+const HAB_COLORS=['#7FB3FF','#F7C873','#F49AA8','#7ED6C2','#A9A6FF','#C9A7FF','#F2A47E','#9BE07A','#FF8FC8','#6FD3F0','#E8D36A','#B6C2D9'];
+function habColor(h){if(h.color)return h.color;const i=habits().findIndex(x=>x.id===h.id);return HAB_COLORS[(i<0?0:i)%HAB_COLORS.length]}
+function hexA(hex,a){const n=parseInt(hex.slice(1),16);return `rgba(${n>>16&255},${n>>8&255},${n&255},${a})`}
+function goalLine(h,v){
+  v=v||ver(h,today())||h.versions[h.versions.length-1];
+  if(v.mode==='weekly')return `${v.times}x por semana`;
+  const days=v.mode==='days'?' · '+freqTxt(v).toLowerCase():'';
+  if(h.type==='qty'){const ts=v.targets||[];const u=[...new Set(ts.map(String))];return (u.length===1?`${fmtNum(ts[0])} ${h.unit||''} por dia`:'meta varia por dia')+days}
+  if(h.type==='time'){const ts=v.targets||[];const u=[...new Set(ts.map(String))];return (u.length===1?`até ${ts[0]}`:'horário varia por dia')+days}
+  return v.mode==='days'?freqTxt(v):'todos os dias';
+}
+function cellInfo(h,d,t){
+  if(d>t)return ['fut',null,''];
+  if(!activeOn(h,d))return ['off',null,''];
+  const weekly=isWeeklyOn(h,d),sch=schedDaily(h,d);
+  if(!weekly&&!sch)return ['off',null,'não previsto'];
+  if(isDone(h,d))return ['done',1,'feito'];
+  if(h.type==='qty'){const e=entry(h,d),tg=targetOf(h,d),v=e?Number(e.v)||0:0;if(v>0&&tg)return ['part',Math.max(.3,Math.min(.85,v/tg)),`${fmtNum(v)} de ${unitTxt(h,tg)}`]}
+  if(weekly)return ['off',null,''];
+  return [d===t?'today':'miss',null,d===t?'pendente':'não feito'];
+}
+function yearGrid(h,y){
+  const t=today(),c=habColor(h),ws=weekStartOf(`${y}-01-01`),end=`${y}-12-31`;
+  const weeks=[];for(let w=ws;w<=end;w=addDays(w,7))weeks.push(w);
+  const half=Math.ceil(weeks.length/2);
+  const block=list=>`<div class="yh-half"><div class="yh-grid" style="grid-template-columns:repeat(${list.length},1fr)">${list.map(w=>{let o='';for(let k=0;k<7;k++){const d=addDays(w,k);if(d.slice(0,4)!==String(y)){o+='<i class="out"></i>';continue}
+      const [st,op,lbl]=cellInfo(h,d,t);let style='';
+      if(st==='done')style=`background:${c}`;else if(st==='part')style=`background:${hexA(c,op)}`;else if(st==='miss')style=`background:${hexA(c,.13)}`;else if(st==='today')style=`background:${hexA(c,.13)}`;
+      o+=`<i class="${st==='fut'?'fut':''} ${d===t?'now':''}" style="${style}" data-tip="${fmtDate(d)}${lbl?' · '+lbl:''}"></i>`}return o}).join('')}</div></div>`;
+  return block(weeks.slice(0,half))+block(weeks.slice(half));
+}
+function habitYearCard(h,y,stats,openable){
+  const c=habColor(h),p=stats&&stats.possible?stats.done/stats.possible:null;
+  return `<div class="yh"><div class="yh-head" ${openable?`data-a="hinfo" data-h="${h.id}"`:''}><span class="ck" style="background:${c}">${ICONS.check}</span><div class="t">${esc(h.name)} ${esc(h.icon||'')} <span>· ${esc(goalLine(h))}</span></div><b>${pctTxt(p)}</b></div>
+    <div class="yh-body">${yearGrid(h,y)}<div class="yh-meta"><span>${stats&&stats.possible?`${stats.done} de ${stats.possible} ${h.versions.some(v=>v.mode==='weekly')?'vezes na meta semanal':'dias previstos'}`:''}</span><span class="yh-leg"><i style="background:${hexA(c,.13)}"></i>não feito <i style="background:${hexA(c,.5)};margin-left:6px"></i>parcial <i style="background:${c};margin-left:6px"></i>feito</span></div></div></div>`;
+}
+function anaTabs(){return `<div class="seg" style="margin-bottom:10px">${[['geral','Geral'],['hab','Por hábito']].map(([k,l])=>`<button data-a="anatab" data-t="${k}" class="${(UI.anaTab||'geral')===k?'on':''}">${l}</button>`).join('')}</div>`}
+function viewHabitYears(){
+  const y=UI.anchor.slice(0,4),st=periodStats(`${y}-01-01`,`${y}-12-31`);
+  const list=habits().filter(h=>!h.archivedAt||h.archivedAt>`${y}-01-01`).filter(h=>h.createdAt<=`${y}-12-31`);
+  const rate=h=>{const x=st.per[h.id];return x&&x.possible?x.done/x.possible:-1};
+  list.sort((a,b)=>rate(b)-rate(a));
+  let html=`<div class="pnav"><button class="iconbtn" data-a="ypre" aria-label="Ano anterior">${ICONS.left}</button><b>${y} em revisão</b><button class="iconbtn" data-a="ynext" aria-label="Próximo ano" ${y>=today().slice(0,4)?'disabled style="opacity:.3"':''}>${ICONS.right}</button></div>`;
+  if(!list.length)return html+`<div class="empty"><b>🗓️</b>Nenhum hábito neste ano.</div>`;
+  html+=`<p class="hint" style="margin:0 2px 12px">Cada quadradinho é um dia. Toque no título para abrir o hábito.</p>`;
+  return html+list.map(h=>habitYearCard(h,y,st.per[h.id],true)).join('');
+}
 function viewAnalises(){
+  if(UI.anaTab==='hab'){return topBar('Análises')+anaTabs()+viewHabitYears()}
   const mode=UI.period,[a,b]=periodRange(mode,UI.anchor);
   const pa=shiftAnchor(mode,UI.anchor,-1),[pa1,pb1]=periodRange(mode,pa);
   const cur=periodStats(a,b),prev=periodStats(pa1,pb1);
   const t=today();
-  let html=topBar('Análises');
+  let html=topBar('Análises')+anaTabs();
   html+=`<div class="seg lime">${[['week','Semana'],['month','Mês'],['year','Ano']].map(([k,l])=>`<button data-a="pmode" data-m="${k}" class="${mode===k?'on':''}">${l}</button>`).join('')}</div>
   <div class="pnav"><button class="iconbtn" data-a="pprev" aria-label="Período anterior">${ICONS.left}</button><b>${periodLabel(mode,a,b)}</b><button class="iconbtn" data-a="pnext" aria-label="Próximo período" ${b>=t?'disabled style="opacity:.3"':''}>${ICONS.right}</button></div>`;
   if(!cur.possible){
@@ -1228,6 +1296,7 @@ function openHabitSheet(h){
       <div class="mini"><b class="num">${s.best}</b><span>recorde</span></div>
       <div class="mini"><b class="num">${mst&&mst.possible?pctTxt(mst.done/mst.possible):'—'}</b><span>neste mês</span></div>
     </div></div>
+    <div class="field"><label>${t.slice(0,4)} em revisão</label>${(()=>{const yy=t.slice(0,4);const ys=periodStats(`${yy}-01-01`,`${yy}-12-31`).per[h.id];return `<div class="yh" style="margin:0"><div class="yh-body">${yearGrid(h,yy)}<div class="yh-meta"><span>${ys&&ys.possible?pctTxt(ys.done/ys.possible)+' no ano':''}</span><span>${esc(goalLine(h))}</span></div></div></div>`})()}</div>
     <div class="field"><label>Últimos 30 dias ${l30&&l30.possible?`· ${pctTxt(l30.done/l30.possible)}`:''}</label><div class="dots30">${dots.join('')}</div></div>
     <div class="actions">${h.type==='check'&&d<=t&&activeOn(h,d)?`<button class="btn ${doneNow?'':'pri'}" data-a="sheet-toggle" data-h="${h.id}">${doneNow?'Desmarcar':'Marcar como feito'}${d!==t?' em '+fmtDate(d):''}</button>`:''}<span class="sp"></span><button class="btn" data-a="sheet-edit" data-h="${h.id}">${ICONS.edit.replace('<svg','<svg width="16" height="16"')} Editar</button></div>`);
 }
@@ -1468,8 +1537,8 @@ function openHabitForm(h){
   if(h){const v=ver(h,t)||h.versions[h.versions.length-1];
     const ts=v.targets?v.targets.slice():null;
     F={id:h.id,name:h.name,icon:h.icon,category:v.category,type:h.type,unit:h.unit||'',step:h.step||1,mode:v.mode,days:v.days.slice(),times:v.times||3,
-      same:!ts||ts.every(x=>String(x)===String(ts[0])),target:ts?ts[1]:'',targets:ts||Array(7).fill(''),reminder:h.reminder||'',details:h.details||'',area:h.area||'',confirmDel:false};
-  }else F={id:null,name:'',icon:'🎯',category:'nf2',type:'check',unit:'',step:1,mode:'daily',days:[1,2,3,4,5],times:3,same:true,target:'',targets:Array(7).fill(''),reminder:'',details:'',area:'',confirmDel:false};
+      same:!ts||ts.every(x=>String(x)===String(ts[0])),target:ts?ts[1]:'',targets:ts||Array(7).fill(''),reminder:h.reminder||'',details:h.details||'',area:h.area||'',color:h.color||'',confirmDel:false};
+  }else F={id:null,name:'',icon:'🎯',category:'nf2',type:'check',unit:'',step:1,mode:'daily',days:[1,2,3,4,5],times:3,same:true,target:'',targets:Array(7).fill(''),reminder:'',details:'',area:'',color:'',confirmDel:false};
   openModal('<div id="hf"></div>',()=>paintHabitForm());
 }
 function paintHabitForm(){
@@ -1480,6 +1549,7 @@ function paintHabitForm(){
   <div class="field"><label>Nome</label><input data-f="name" value="${esc(F.name)}" placeholder="Ex.: Beber água" maxlength="60"></div>
   <div class="field"><label>Ícone</label><div class="row"><input data-f="icon" value="${esc(F.icon)}" style="width:70px;text-align:center;font-size:20px" maxlength="4"><span class="hint" style="margin:0">Digite um emoji ou escolha abaixo</span></div>
     <div class="emojis">${EMOJIS.map(e=>`<button data-a="f-icon" data-e="${e}">${e}</button>`).join('')}</div></div>
+  <div class="field"><label>Cor</label><div class="colors">${HAB_COLORS.map(c=>`<button data-a="f-color" data-v="${c}" class="${(F.color||(F.id?habColor(byId(F.id)):HAB_COLORS[S.meta.habits.length%HAB_COLORS.length]))===c?'on':''}" style="background:${c}" aria-label="Cor ${c}"></button>`).join('')}</div><div class="hint">Usada no progresso por hábito (Análises › Por hábito).</div></div>
   <div class="field"><label>Área</label>${areaChips(F.area,'f-area')}<div class="hint">Tema do hábito (saúde, autocuidado…). Edite a lista em Hábitos › Áreas.</div></div>
   <div class="field"><label>Prioridade</label><div class="chips cat">${['ineg','nf2'].map(c=>`<button data-a="f-set" data-k="category" data-v="${c}" class="${c} ${F.category===c?'on':''}">${CAT[c]}</button>`).join('')}</div>
     <div class="hint">${F.category==='nf2'?'Se falhar um dia, o app avisa no dia seguinte para você não falhar de novo.':'Hábito que você não abre mão: precisa acontecer todo dia previsto.'}</div></div>
@@ -1515,11 +1585,11 @@ function saveHabitForm(){
   const nv={category:F.category,mode:F.mode,days:F.days.slice().sort(),times:Math.max(1,Math.min(7,Number(F.times)||1)),targets:F.type==='check'?null:readTargets()};
   if(!F.id){
     const max=Math.max(-1,...S.meta.habits.map(h=>h.order));
-    S.meta.habits.push({id:newId(),name,icon:F.icon||'•',type:F.type,unit:F.unit.trim(),step:Number(F.step)||1,reminder:F.reminder,details:F.details.trim(),area:F.area,createdAt:t,archivedAt:null,order:max+1,versions:[{from:t,...nv}]});
+    S.meta.habits.push({id:newId(),name,icon:F.icon||'•',type:F.type,unit:F.unit.trim(),step:Number(F.step)||1,reminder:F.reminder,details:F.details.trim(),area:F.area,color:F.color||HAB_COLORS[S.meta.habits.length%HAB_COLORS.length],createdAt:t,archivedAt:null,order:max+1,versions:[{from:t,...nv}]});
     toast('Hábito criado');
   }else{
     const h=S.meta.habits.find(x=>x.id===F.id);
-    Object.assign(h,{name,icon:F.icon||'•',type:F.type,unit:F.unit.trim(),step:Number(F.step)||1,reminder:F.reminder,details:F.details.trim(),area:F.area});
+    Object.assign(h,{name,icon:F.icon||'•',type:F.type,unit:F.unit.trim(),step:Number(F.step)||1,reminder:F.reminder,details:F.details.trim(),area:F.area,...(F.color?{color:F.color}:{})});
     const last=h.versions[h.versions.length-1];
     const same=JSON.stringify([last.category,last.mode,last.days,last.times,last.targets])===JSON.stringify([nv.category,nv.mode,nv.days,nv.times,nv.targets]);
     if(!same){if(last.from>=t)Object.assign(last,nv,{from:last.from});else h.versions.push({from:t,...nv})}
@@ -1629,6 +1699,10 @@ const A={
   'sheet-edit':el=>openHabitForm(byId(el.dataset.h)),
   'sheet-toggle':el=>{const h=byId(el.dataset.h);const d=UI.date;if(d>today())return;const e=entry(h,d);setEntry(h,d,e&&e.d?null:{d:true});openHabitSheet(h)},
   hnew:()=>openHabitForm(null),
+  anatab:el=>{UI.anaTab=el.dataset.t;render()},
+  ypre:()=>{UI.anchor=shiftAnchor('year',UI.anchor,-1);render()},
+  ynext:()=>{const n=shiftAnchor('year',UI.anchor,1);if(n.slice(0,4)<=today().slice(0,4)){UI.anchor=n;render()}},
+  'f-color':el=>{F.color=el.dataset.v;paintHabitForm()},
   'soc-tab':el=>{SOC.tab=el.dataset.t;SOC.msg='';if(el.dataset.t!=='perfil')loadFriends().then(render).catch(()=>{});render()},
   'soc-go':el=>{SOC.tab=el.dataset.t;UI.view='perfil';history.replaceState(null,'','#perfil');render();window.scrollTo(0,0)},
   'soc-rank':el=>{SOC.rank=el.dataset.t;render()},
