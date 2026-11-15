@@ -1,9 +1,45 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Cada pessoa só lê e escreve os próprios dados.
+    function signedIn() { return request.auth != null; }
+
+    // Dados privados: cada pessoa só lê e escreve os próprios.
     match /users/{uid}/{document=**} {
-      allow read, write: if request.auth != null && request.auth.uid == uid;
+      allow read, write: if signedIn() && request.auth.uid == uid;
+    }
+
+    // Perfil público: nome, @usuário, avatar, código e números da ofensiva.
+    match /profiles/{uid} {
+      allow read: if signedIn();
+      allow write: if signedIn() && request.auth.uid == uid;
+    }
+
+    // Reserva de @usuário e de código de amigo (só cria se estiver livre).
+    match /usernames/{name} {
+      allow read: if signedIn();
+      allow create: if signedIn() && request.resource.data.uid == request.auth.uid;
+      allow delete: if signedIn() && resource.data.uid == request.auth.uid;
+    }
+    match /codes/{code} {
+      allow read: if signedIn();
+      allow create: if signedIn() && request.resource.data.uid == request.auth.uid;
+      allow delete: if signedIn() && resource.data.uid == request.auth.uid;
+    }
+
+    // Pedidos de amizade: id = "deQuem_paraQuem".
+    match /requests/{id} {
+      allow read: if signedIn() && (resource.data.from == request.auth.uid || resource.data.to == request.auth.uid);
+      allow create: if signedIn()
+        && request.resource.data.from == request.auth.uid
+        && request.resource.data.to != request.auth.uid
+        && request.resource.data.status == 'pending'
+        && id == request.resource.data.from + '_' + request.resource.data.to;
+      allow update: if signedIn()
+        && resource.data.to == request.auth.uid
+        && request.resource.data.status == 'accepted'
+        && request.resource.data.from == resource.data.from
+        && request.resource.data.to == resource.data.to;
+      allow delete: if signedIn() && (resource.data.from == request.auth.uid || resource.data.to == request.auth.uid);
     }
   }
 }

@@ -209,6 +209,29 @@ body[data-theme=pirata] .home-hero{background:radial-gradient(120% 90% at 50% 0%
 .themes button span{font-size:13px;font-weight:700}
 .themes button small{font-size:11px;color:var(--muted)}
 .themes button.on{border-color:var(--lime);background:var(--lime-soft)}
+.avatar-btn{font-size:20px}
+.pf-head{display:flex;align-items:center;gap:14px}
+.pf-av{width:72px;height:72px;border-radius:22px;background:var(--card2);display:grid;place-items:center;font-size:40px;flex-shrink:0;cursor:pointer;border:2px solid var(--lime)}
+.pf-name{font-family:var(--title,var(--num));font-size:22px;font-weight:700}
+.pf-user{color:var(--muted);font-size:14px}
+.codebox{display:flex;align-items:center;gap:10px;background:var(--card2);border-radius:12px;padding:10px 12px;margin-top:12px}
+.codebox b{font-family:var(--num);font-size:22px;letter-spacing:.18em;flex:1}
+.frow{display:flex;align-items:center;gap:12px;background:var(--card);border-radius:14px;padding:10px 12px}
+.frow .av{width:42px;height:42px;border-radius:12px;background:var(--card2);display:grid;place-items:center;font-size:22px;flex-shrink:0}
+.frow .main{flex:1;min-width:0}
+.frow .nm{font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.frow .us{font-size:12.5px;color:var(--muted)}
+.frow .st{font-family:var(--num);font-weight:700;font-size:18px;display:flex;align-items:center;gap:4px}
+.frow.me{outline:2px solid var(--lime);background:var(--lime-soft)}
+.rk{width:28px;text-align:center;font-family:var(--num);font-weight:700;color:var(--muted);font-size:16px;flex-shrink:0}
+.rk.m{font-size:22px}
+.risk{font-size:11px;font-weight:700;padding:2px 7px;border-radius:999px}
+.risk.ok{background:var(--lime-soft);color:var(--lime)}
+.risk.warn{background:var(--warn-soft);color:var(--warn)}
+.risk.off{background:var(--card2);color:var(--faint)}
+.av-grid{display:grid;grid-template-columns:repeat(8,1fr);gap:6px}
+.av-grid button{font-size:24px;aspect-ratio:1;border-radius:12px;background:var(--card2);border:2px solid transparent}
+.av-grid button.on{border-color:var(--lime)}
 .toggle-more{width:100%;text-align:center;color:var(--faint);font-size:13px;padding:12px}
 /* journal */
 .moods{display:flex;gap:8px;margin:10px 0 12px}
@@ -418,7 +441,7 @@ const Store={
       try{await FB.load()}catch(e){toast('Não consegui carregar o Firebase. Usando os dados deste aparelho.');this.mode='local';this.loadLocal();setSync('local');onLoaded();return}
       FB.m.getRedirectResult(FB.auth).catch(loginErr);
       FB.m.onAuthStateChanged(FB.auth,u=>{
-        if(u){if(this.uid===u.uid)return;FB.user=u;this.uid=u.uid;S={meta:null,months:{}};UI.onboardingShown=false;
+        if(u){if(this.uid===u.uid)return;FB.user=u;this.uid=u.uid;Object.assign(SOC,{profile:null,loaded:false,friends:[],incoming:[],outgoing:[],search:null,lastPub:''});S={meta:null,months:{}};UI.onboardingShown=false;
           document.getElementById('main').innerHTML='<div class="loading"><div><div class="spin"></div>Carregando seus hábitos…</div></div>';this.subscribe()}
         else{FB.user=null;this.uid=null;if(this.unsub){this.unsub();this.unsub=null}S={meta:null,months:{}};renderLogin()}
       });
@@ -655,7 +678,7 @@ function renderNav(){
   document.getElementById('bottom').innerHTML=b;
   document.getElementById('side').innerHTML=`<div class="brand"><span style="color:var(--lime)">●</span> Hábitos</div>`+VIEWS.map(([k,l])=>`<button data-a="nav" data-v="${k}" class="${UI.view===k?'on':''}">${ICONS[k]}${l}</button>`).join('');
 }
-function readHash(){const h=location.hash.slice(1);if(VIEWS.some(v=>v[0]===h))UI.view=h}
+function readHash(){const h=location.hash.slice(1);if(VIEWS.some(v=>v[0]===h)||h==='perfil')UI.view=h}
 addEventListener('hashchange',()=>{readHash();render()});
 
 function onLoaded(){
@@ -672,15 +695,15 @@ document.addEventListener('focusout',()=>{setTimeout(()=>{if(UI.pendingRender){c
 
 function render(){
   if(!S.meta)return;
-  applyTheme();
+  applyTheme();schedulePublish();
   renderNav();
   const m=document.getElementById('main');
-  const fn={inicio:viewInicio,hoje:viewHoje,analises:viewAnalises,metas:viewMetas,habitos:viewHabitos}[UI.view];
+  const fn={perfil:viewPerfil,inicio:viewInicio,hoje:viewHoje,analises:viewAnalises,metas:viewMetas,habitos:viewHabitos}[UI.view];
   m.innerHTML=fn();
   const s=document.getElementById('sync');if(s)paintSync(s);
   m.querySelectorAll('.hm-wrap').forEach(w=>{const t=w.querySelector('.today');if(t&&w.scrollWidth>w.clientWidth)w.scrollLeft=Math.max(0,t.offsetLeft-w.clientWidth+60)});
 }
-function topBar(title,extra=''){return `<div class="top"><h1>${title}</h1><div class="row" style="width:auto">${extra}<span class="sync" id="sync"></span><button class="iconbtn" data-a="settings" aria-label="Configurações">${ICONS.gear}</button></div></div>`}
+function topBar(title,extra=''){const av=SOC.profile?esc(SOC.profile.avatar||'🙂'):'🙂';return `<div class="top"><h1>${title}</h1><div class="row" style="width:auto">${extra}<span class="sync" id="sync"></span><button class="iconbtn avatar-btn" data-a="nav" data-v="perfil" aria-label="Meu perfil">${av}</button><button class="iconbtn" data-a="settings" aria-label="Configurações">${ICONS.gear}</button></div></div>`}
 function renderConnectNote(){const m=document.getElementById('main');if(m&&!S.meta)m.innerHTML=`<div class="loading"><div><div class="spin"></div>Ainda conectando à sua conta…<br><small class="faint">Verifique sua internet. Seus dados aparecem assim que a conexão voltar.</small></div></div>`}
 
 /* ============ HOJE ============ */
@@ -876,6 +899,7 @@ function viewInicio(){
   html+=`<div class="section-t">${T.pet}: ${S0.e} ${S0.name}${nextS?`<span style="margin-left:auto;letter-spacing:0;text-transform:none;font-weight:600">faltam ${nextS.n-si.cur} ${nextS.n-si.cur===1?'dia':'dias'} para ${nextS.e}</span>`:''}</div>
     <div class="milestones">${STG.slice(1).map((m,i)=>`<div class="ms ${si.best>=m.n?'got':''} ${nextS&&m.n===nextS.n?'next':''}"><b>${m.e}</b>${m.n} ${m.n===1?'dia':'dias'}</div>`).join('')}</div>`;
   const mt=periodStats(...periodRange('month',t)),wk=periodStats(weekStartOf(t),addDays(weekStartOf(t),6));
+  html+=homeRankCard();
   html+=`<div class="kpis"><div class="kpi"><span>Esta semana</span><b>${pctTxt(wk.pct)}</b></div><div class="kpi"><span>Este mês</span><b>${pctTxt(mt.pct)}</b></div><div class="kpi"><span>Recorde</span><b>${si.best}</b><small>dias seguidos</small></div><div class="kpi"><span>${T.petShort}</span><b>${S0.e}</b><small>${S0.name}</small></div></div>`;
   return html;
 }
@@ -1244,6 +1268,156 @@ function loginErr(e){if(!e||!e.code)return;const el=document.getElementById('lg-
 function loginMsg(t){const el=document.getElementById('lg-msg');if(el){el.textContent=t;el.style.color=''}}
 function creds(){return [document.getElementById('lg-email').value.trim(),document.getElementById('lg-pass').value]}
 
+/* ============ social: perfil, amigos e ranking ============ */
+const SOC={profile:null,loading:false,loaded:false,friends:[],incoming:[],outgoing:[],tab:'perfil',rank:'streak',search:null,msg:'',lastPub:''};
+const AVATARS=['🙂','😎','🤓','🥳','😺','🐶','🦊','🐼','🐸','🐙','🦄','🐲','🦁','🐯','🐧','🦉','🌻','🌵','🍀','⚡','🔥','🌙','⭐','🎯','🏴‍☠️','🪄','🎮','🎧','📚','💪','🧘','🚀'];
+const CODE_CHARS='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+function socialOn(){return Store.mode==='fb'&&FB.user&&Store.uid}
+function fdoc(...p){return FB.m.doc(FB.db,...p)}
+function randCode(){let c='';for(let i=0;i<6;i++)c+=CODE_CHARS[Math.floor(Math.random()*CODE_CHARS.length)];return c}
+function cleanUser(x){return String(x||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9_.]/g,'').slice(0,20)}
+async function claim(col,id){try{await FB.m.setDoc(fdoc(col,id),{uid:Store.uid,at:Date.now()});return true}catch(e){return false}}
+async function loadSocial(force){
+  if(!socialOn()||SOC.loading||(SOC.loaded&&!force))return;
+  SOC.loading=true;
+  try{
+    const snap=await FB.m.getDoc(fdoc('profiles',Store.uid));
+    if(snap.exists())SOC.profile=snap.data();
+    else await createProfile();
+    await loadFriends();
+    SOC.loaded=true;
+  }catch(e){SOC.msg='Não consegui carregar o perfil ('+(e.code||e.message)+').'}
+  SOC.loading=false;
+  publishStats(true);
+  if(UI.view==='perfil'||UI.view==='inicio')render();
+}
+async function createProfile(){
+  const u=FB.user;let base=cleanUser((u.displayName||'').split(' ')[0]||(u.email||'').split('@')[0])||'usuario';if(base.length<3)base+='123';
+  let username=null;for(let i=0;i<6&&!username;i++){const cand=i?(base.slice(0,16)+Math.floor(Math.random()*9000+100)):base;if(await claim('usernames',cand))username=cand}
+  let code=null;for(let i=0;i<6&&!code;i++){const c=randCode();if(await claim('codes',c))code=c}
+  const p={uid:Store.uid,username,code,name:(u.displayName||username||'').split(' ')[0]||username,avatar:'🙂',createdAt:Date.now()};
+  await FB.m.setDoc(fdoc('profiles',Store.uid),p);SOC.profile=p;
+}
+function myStats(){
+  const si=streakInfo(),t=today(),wk=periodStats(addDays(t,-6),t);
+  let lastOK=null;if(si.todayOK)lastOK=t;else if(si.cur>0)lastOK=addDays(t,-1);
+  const T=theme(),stg=tStages();let st=0;stg.forEach((x,k)=>{if(si.cur>=x.n)st=k});
+  return {streak:si.cur,best:si.best,lastOK,day:t,todayOK:si.todayOK,week:wk.pct==null?null:Math.round(wk.pct*100),goal:settings().streakGoal,theme:settings().theme||'padrao',stageE:stg[st].e,habits:activeHabits().length};
+}
+let pubTimer=null;
+function schedulePublish(){if(!socialOn()||!SOC.profile)return;clearTimeout(pubTimer);pubTimer=setTimeout(()=>publishStats(),2500)}
+async function publishStats(force){
+  if(!socialOn()||!SOC.profile||!S.meta)return;
+  const st=myStats(),key=JSON.stringify(st);if(!force&&key===SOC.lastPub)return;SOC.lastPub=key;
+  try{await FB.m.setDoc(fdoc('profiles',Store.uid),{stats:st,updatedAt:Date.now()},{merge:true});SOC.profile.stats=st}catch(e){}
+}
+async function loadFriends(){
+  const m=FB.m,col=m.collection(FB.db,'requests');
+  const [a,b]=await Promise.all([m.getDocs(m.query(col,m.where('from','==',Store.uid))),m.getDocs(m.query(col,m.where('to','==',Store.uid)))]);
+  const reqs=[...a.docs,...b.docs].map(d=>({id:d.id,...d.data()}));
+  const fr=reqs.filter(r=>r.status==='accepted').map(r=>r.from===Store.uid?r.to:r.from);
+  SOC.incoming=reqs.filter(r=>r.status==='pending'&&r.to===Store.uid);
+  SOC.outgoing=reqs.filter(r=>r.status==='pending'&&r.from===Store.uid);
+  SOC.reqByUid={};reqs.forEach(r=>{SOC.reqByUid[r.from===Store.uid?r.to:r.from]=r});
+  const profs=await Promise.all(fr.map(uid=>m.getDoc(fdoc('profiles',uid)).then(s=>s.exists()?s.data():null).catch(()=>null)));
+  SOC.friends=profs.filter(Boolean);
+}
+function effStreak(p){const s=p&&p.stats;if(!s)return 0;const t=today(),y=addDays(t,-1);return s.lastOK&&(s.lastOK===t||s.lastOK===y)?s.streak:0}
+function statusOf(p){const s=p&&p.stats,t=today();if(!s||!s.habits)return ['off','sem hábitos'];if(s.day===t&&s.todayOK)return ['ok','garantiu hoje'];if(effStreak(p)>0)return ['warn','em risco hoje'];return ['off','sem ofensiva']}
+function rankList(){
+  const me=SOC.profile?{...SOC.profile,stats:myStats(),_me:true}:null;
+  const all=[...(me?[me]:[]),...SOC.friends.filter(p=>p.stats&&p.stats.habits)];
+  const k=SOC.rank;
+  const val=p=>k==='best'?(p.stats.best||0):k==='week'?(p.stats.week??-1):effStreak(p);
+  return all.sort((a,b)=>val(b)-val(a)||((b.stats.week??-1)-(a.stats.week??-1))||((b.stats.best||0)-(a.stats.best||0))||String(a.name).localeCompare(String(b.name))).map(p=>({p,v:val(p)}));
+}
+function homeRankCard(){
+  if(!socialOn())return '';
+  if(!SOC.loaded){loadSocial();return ''}
+  if(!SOC.friends.length)return `<div class="card" style="margin-top:12px;display:flex;align-items:center;gap:12px;cursor:pointer" data-a="soc-go" data-t="amigos"><span style="font-size:28px">👥</span><div style="flex:1"><b>Desafie seus amigos</b><div class="hint" style="margin:2px 0 0">Adicione amigos e disputem quem mantém a maior ofensiva.</div></div>${ICONS.right.replace('<svg','<svg width="18" height="18"')}</div>`;
+  const keep=SOC.rank;SOC.rank='streak';const list=rankList();SOC.rank=keep;const pos=list.findIndex(x=>x.p._me)+1;
+  return `<div class="card" style="margin-top:12px;cursor:pointer" data-a="soc-go" data-t="ranking"><h3>🏆 Ranking de ofensivas <small>${pos}º de ${list.length}</small></h3>${list.slice(0,3).map((x,i)=>`<div class="st" style="margin-bottom:6px"><span>${['🥇','🥈','🥉'][i]}</span><span>${esc(x.p.avatar||'🙂')}</span><span class="n">${x.p._me?'Você':esc(x.p.name)}</span><b>${theme().fire} ${x.v}</b></div>`).join('')}</div>`;
+}
+function viewPerfil(){
+  let html=topBar('Perfil');
+  if(!socialOn())return html+`<div class="empty"><b>👤</b>Perfil e amigos funcionam com a conta conectada.<br><small class="faint">Abra o app pelo link e entre com Google ou e-mail.</small></div>`;
+  if(!SOC.loaded){loadSocial();return html+`<div class="loading"><div><div class="spin"></div>Carregando perfil…</div></div>`}
+  const p=SOC.profile,st=myStats(),T=theme(),n=SOC.incoming.length;
+  html+=`<div class="seg lime" style="margin-bottom:14px">${[['perfil','Meu perfil'],['amigos','Amigos'+(n?' ('+n+')':'')],['ranking','Ranking']].map(([k,l])=>`<button data-a="soc-tab" data-t="${k}" class="${SOC.tab===k?'on':''}">${l}</button>`).join('')}</div>`;
+  if(SOC.msg)html+=`<div class="note">${esc(SOC.msg)}</div>`;
+  if(SOC.tab==='perfil'){
+    html+=`<div class="card"><div class="pf-head"><div class="pf-av" data-a="pf-edit" title="Editar">${esc(p.avatar||'🙂')}</div><div style="min-width:0;flex:1"><div class="pf-name">${esc(p.name||'')}</div><div class="pf-user">@${esc(p.username||'')}</div><div class="hint" style="margin:4px 0 0">${T.icon} Tema ${T.name}</div></div><button class="btn sm" data-a="pf-edit">Editar</button></div>
+      <div class="codebox"><span class="muted" style="font-size:12px">Seu código<br>de amigo</span><b>${esc(p.code||'')}</b><button class="btn sm" data-a="pf-copy">Copiar</button></div>
+      <div class="hint" style="margin-top:8px">Passe seu @usuário ou código para seus amigos te adicionarem. Seus amigos veem só seu nome, avatar e números da ofensiva — nunca seus hábitos.</div></div>
+      <div class="kpis"><div class="kpi"><span>Ofensiva</span><b>${T.fire} ${st.streak}</b></div><div class="kpi"><span>Recorde</span><b>${st.best}</b></div><div class="kpi"><span>Últimos 7 dias</span><b>${st.week==null?'—':st.week+'%'}</b></div><div class="kpi"><span>${T.petShort}</span><b>${st.stageE}</b></div></div>`;
+  }else if(SOC.tab==='amigos'){
+    html+=`<div class="card"><h3>Adicionar amigo</h3><div class="row"><input id="soc-q" placeholder="@usuario ou código (ex.: K7M2QX)" autocomplete="off" autocapitalize="none" style="flex:1"><button class="btn pri" data-a="soc-find">Buscar</button></div>${SOC.search?searchCard(SOC.search):''}</div>`;
+    if(SOC.incoming.length)html+=`<div class="section-t">Pedidos recebidos · ${SOC.incoming.length}</div><div class="list">${SOC.incoming.map(r=>`<div class="frow"><div class="av">${esc(r.fromAvatar||'🙂')}</div><div class="main"><div class="nm">${esc(r.fromName||'')}</div><div class="us">@${esc(r.fromUser||'')}</div></div><button class="btn sm pri" data-a="soc-accept" data-id="${esc(r.id)}">Aceitar</button><button class="btn sm" data-a="soc-del" data-id="${esc(r.id)}">Recusar</button></div>`).join('')}</div>`;
+    html+=`<div class="section-t">Amigos · ${SOC.friends.length}</div><div class="list">${SOC.friends.map(f=>{const [c,l]=statusOf(f);return `<div class="frow"><div class="av">${esc(f.avatar||'🙂')}</div><div class="main"><div class="nm">${esc(f.name||'')} <span class="risk ${c}">${l}</span></div><div class="us">@${esc(f.username||'')} · ${f.stats?esc(f.stats.stageE||''):''} recorde ${f.stats?f.stats.best:0}</div></div><div class="st">${(THEMES[(f.stats&&f.stats.theme)||'padrao']||THEMES.padrao).fire} ${effStreak(f)}</div><button class="iconbtn" data-a="soc-unfriend" data-u="${esc(f.uid)}" aria-label="Remover amigo" style="width:30px;height:30px">${ICONS.x.replace('<svg','<svg width="14" height="14"')}</button></div>`}).join('')||'<div class="faint" style="padding:6px 4px;font-size:13px">Nenhum amigo ainda. Busque pelo @usuário ou código acima.</div>'}</div>`;
+    if(SOC.outgoing.length)html+=`<div class="section-t">Pedidos enviados</div><div class="list">${SOC.outgoing.map(r=>`<div class="frow"><div class="av">⏳</div><div class="main"><div class="nm">${esc(r.toName||'')}</div><div class="us">@${esc(r.toUser||'')} · aguardando</div></div><button class="btn sm" data-a="soc-del" data-id="${esc(r.id)}">Cancelar</button></div>`).join('')}</div>`;
+  }else{
+    const list=rankList();
+    html+=`<div class="seg" style="margin-bottom:12px">${[['streak','Ofensiva atual'],['best','Recorde'],['week','7 dias (%)']].map(([k,l])=>`<button data-a="soc-rank" data-t="${k}" class="${SOC.rank===k?'on':''}">${l}</button>`).join('')}</div>`;
+    html+=`<div class="list">${list.map((x,i)=>{const [c,l]=statusOf(x.p);const fire=(THEMES[x.p.stats.theme||'padrao']||THEMES.padrao).fire;return `<div class="frow ${x.p._me?'me':''}"><div class="rk ${i<3?'m':''}">${i<3?['🥇','🥈','🥉'][i]:i+1}</div><div class="av">${esc(x.p.avatar||'🙂')}</div><div class="main"><div class="nm">${x.p._me?'Você':esc(x.p.name||'')} <span class="risk ${c}">${l}</span></div><div class="us">@${esc(x.p.username||'')} · meta ${x.p.stats.goal||80}%</div></div><div class="st">${SOC.rank==='week'?(x.v<0?'—':x.v+'%'):fire+' '+x.v}</div></div>`}).join('')}</div>`;
+    if(list.length<2)html+=`<div class="note" style="margin-top:12px">Adicione amigos para disputar o ranking. <button class="btn sm" data-a="soc-tab" data-t="amigos" style="margin-left:auto">Adicionar</button></div>`;
+    html+=`<div class="card" style="margin-top:14px"><h3>Como funciona</h3><div class="summary" style="font-size:13.5px">
+      <b>Ofensiva atual:</b> dias seguidos batendo a meta do dia. Desempate: % dos últimos 7 dias, depois recorde.<br>
+      <b>Recorde:</b> a maior ofensiva que a pessoa já teve.<br>
+      <b>7 dias:</b> % de hábitos cumpridos na última semana.<br>
+      Se a pessoa não bateu a meta ontem nem hoje, a ofensiva dela conta como 0. Os números de cada amigo atualizam quando ele abre o app.</div></div>`;
+  }
+  return html;
+}
+function searchCard(r){
+  if(r.err)return `<div class="hint" style="margin-top:10px;color:#FF8A8A">${esc(r.err)}</div>`;
+  const p=r.p,rel=SOC.reqByUid&&SOC.reqByUid[p.uid];
+  let act=`<button class="btn sm pri" data-a="soc-add" data-u="${esc(p.uid)}">Adicionar</button>`;
+  if(p.uid===Store.uid)act='<span class="faint" style="font-size:13px">É você 🙂</span>';
+  else if(rel&&rel.status==='accepted')act='<span class="risk ok">Amigos</span>';
+  else if(rel&&rel.from===Store.uid)act='<span class="risk off">Pedido enviado</span>';
+  else if(rel)act=`<button class="btn sm pri" data-a="soc-accept" data-id="${esc(rel.id)}">Aceitar pedido</button>`;
+  return `<div class="frow" style="margin-top:12px;background:var(--card2)"><div class="av">${esc(p.avatar||'🙂')}</div><div class="main"><div class="nm">${esc(p.name||'')}</div><div class="us">@${esc(p.username||'')}</div></div>${act}</div>`;
+}
+async function socFind(){
+  const q=(document.getElementById('soc-q').value||'').trim();if(!q)return;
+  let uid=null;
+  try{
+    const asCode=q.replace(/[^a-zA-Z0-9]/g,'').toUpperCase();
+    if(!q.startsWith('@')&&asCode.length===6&&[...asCode].every(c=>CODE_CHARS.includes(c))){const s=await FB.m.getDoc(fdoc('codes',asCode));if(s.exists())uid=s.data().uid}
+    if(!uid){const u=cleanUser(q.replace(/^@/,''));if(u){const s=await FB.m.getDoc(fdoc('usernames',u));if(s.exists())uid=s.data().uid}}
+    if(!uid){SOC.search={err:'Ninguém encontrado com esse @usuário ou código.'};return render()}
+    const ps=await FB.m.getDoc(fdoc('profiles',uid));
+    SOC.search=ps.exists()?{p:ps.data()}:{err:'Perfil não encontrado.'};
+  }catch(e){SOC.search={err:'Erro na busca ('+(e.code||e.message)+').'}}
+  render();const i=document.getElementById('soc-q');if(i)i.value=q;
+}
+async function socAdd(uid){
+  const p=SOC.search&&SOC.search.p;if(!p||p.uid!==uid)return;const me=SOC.profile;
+  try{await FB.m.setDoc(fdoc('requests',Store.uid+'_'+uid),{from:Store.uid,to:uid,status:'pending',createdAt:Date.now(),fromName:me.name||'',fromUser:me.username||'',fromAvatar:me.avatar||'🙂',toName:p.name||'',toUser:p.username||''});toast('Pedido enviado!')}
+  catch(e){toast('Não foi possível enviar ('+(e.code||'erro')+').')}
+  await loadFriends();render();
+}
+function openProfileEdit(){
+  const p=SOC.profile;let av=p.avatar||'🙂';
+  openModal(`${mHead('Editar perfil')}
+    <div class="field"><label>Avatar</label><div class="av-grid">${AVATARS.map(a=>`<button data-a="pf-av" data-v="${a}" class="${a===av?'on':''}">${a}</button>`).join('')}</div></div>
+    <div class="field"><label>Nome</label><input id="pf-name" value="${esc(p.name||'')}" maxlength="24"></div>
+    <div class="field"><label>Nome de usuário</label><div class="row"><span class="muted">@</span><input id="pf-user" value="${esc(p.username||'')}" maxlength="20" autocapitalize="none" autocomplete="off"></div><div class="hint">3 a 20 caracteres: letras minúsculas, números, ponto ou _. Precisa ser único.</div></div>
+    <div id="pf-msg" class="hint" style="color:#FF8A8A"></div>
+    <div class="actions"><span class="sp"></span><button class="btn pri" data-a="pf-save">Salvar</button></div>`,m=>{m.dataset.av=av});
+}
+async function saveProfileEdit(){
+  const p=SOC.profile,name=document.getElementById('pf-name').value.trim().slice(0,24),uRaw=document.getElementById('pf-user').value.trim(),u=cleanUser(uRaw);
+  const av=document.querySelector('.av-grid button.on')?.dataset.v||p.avatar;const msg=document.getElementById('pf-msg');
+  if(!name)return msg.textContent='Digite um nome.';
+  if(u.length<3||u!==uRaw.toLowerCase())return msg.textContent='Use 3 a 20 caracteres: letras minúsculas, números, ponto ou _.';
+  try{
+    if(u!==p.username){if(!(await claim('usernames',u)))return msg.textContent='Esse nome de usuário já está em uso.';if(p.username)FB.m.deleteDoc(fdoc('usernames',p.username)).catch(()=>{})}
+    await FB.m.setDoc(fdoc('profiles',Store.uid),{name,username:u,avatar:av},{merge:true});
+    Object.assign(p,{name,username:u,avatar:av});closeModal();toast('Perfil atualizado');
+  }catch(e){msg.textContent='Erro ao salvar ('+(e.code||e.message)+').'}
+}
+
 /* ============ modal ============ */
 let modalCleanup=null;
 function openModal(html,onMount){
@@ -1450,6 +1624,18 @@ const A={
   'sheet-edit':el=>openHabitForm(byId(el.dataset.h)),
   'sheet-toggle':el=>{const h=byId(el.dataset.h);const d=UI.date;if(d>today())return;const e=entry(h,d);setEntry(h,d,e&&e.d?null:{d:true});openHabitSheet(h)},
   hnew:()=>openHabitForm(null),
+  'soc-tab':el=>{SOC.tab=el.dataset.t;SOC.msg='';if(el.dataset.t!=='perfil')loadFriends().then(render).catch(()=>{});render()},
+  'soc-go':el=>{SOC.tab=el.dataset.t;UI.view='perfil';history.replaceState(null,'','#perfil');render();window.scrollTo(0,0)},
+  'soc-rank':el=>{SOC.rank=el.dataset.t;render()},
+  'soc-find':()=>socFind(),
+  'soc-add':el=>socAdd(el.dataset.u),
+  'soc-accept':async el=>{try{await FB.m.updateDoc(fdoc('requests',el.dataset.id),{status:'accepted',acceptedAt:Date.now()});toast('Agora vocês são amigos!')}catch(e){toast('Erro ('+(e.code||'')+')')}await loadFriends();SOC.search=null;render()},
+  'soc-del':async el=>{try{await FB.m.deleteDoc(fdoc('requests',el.dataset.id))}catch(e){}await loadFriends();render()},
+  'soc-unfriend':async el=>{const r=SOC.reqByUid&&SOC.reqByUid[el.dataset.u];if(!r)return;if(el.dataset.c!=='1'){el.dataset.c='1';el.style.background='rgba(255,90,90,.2)';toast('Toque de novo para remover');return}try{await FB.m.deleteDoc(fdoc('requests',r.id))}catch(e){}await loadFriends();render()},
+  'pf-edit':()=>openProfileEdit(),
+  'pf-av':el=>{document.querySelectorAll('.av-grid button').forEach(b=>b.classList.toggle('on',b===el))},
+  'pf-save':()=>saveProfileEdit(),
+  'pf-copy':async()=>{const p=SOC.profile;const t=`Me adiciona no app Hábitos! Meu usuário: @${p.username} · código: ${p.code}\nhttps://giovannaexe.github.io/habit-tracker/`;try{await navigator.clipboard.writeText(t);toast('Copiado!')}catch(e){toast('Código: '+p.code)}},
   'login-google':async()=>{const m=FB.m,p=new m.GoogleAuthProvider();p.setCustomParameters({prompt:'select_account'});loginMsg('Abrindo o Google…');
     try{await m.signInWithPopup(FB.auth,p)}catch(e){if(['auth/popup-blocked','auth/operation-not-supported-in-this-environment','auth/cancelled-popup-request'].includes(e.code)){try{await m.signInWithRedirect(FB.auth,p)}catch(e2){loginErr(e2)}}else loginErr(e)}},
   'login-email':async()=>{const[e,p]=creds();loginMsg('Entrando…');try{await FB.m.signInWithEmailAndPassword(FB.auth,e,p)}catch(x){loginErr(x)}},
@@ -1534,6 +1720,7 @@ document.addEventListener('change',e=>{
 document.addEventListener('keydown',e=>{
   if(e.key==='Escape'&&document.getElementById('modal-root').firstChild&&!document.querySelector('[data-lock]'))closeModal();
   if(e.key==='Enter'&&e.target.dataset&&e.target.dataset.in==='qset')e.target.blur();
+  if(e.key==='Enter'&&e.target.id==='soc-q')socFind();
   if(e.key==='Enter'&&e.target.id==='qs-custom'){const b=document.querySelector('[data-a="qs-custom"]');if(b)A['qs-custom'](b)}
   if(e.key==='Enter'&&e.target.id==='ts-in'){const b=document.querySelector('[data-a="ts-set"]');if(b)A['ts-set'](b)}
 });
