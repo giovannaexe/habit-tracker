@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0E0F13">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
@@ -29,7 +29,7 @@
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:15px;line-height:1.4;-webkit-font-smoothing:antialiased}
 button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
-input,textarea,select{font:inherit;color:var(--text);background:var(--card2);border:1px solid var(--line);border-radius:var(--rs);padding:10px 12px;width:100%;outline:none}
+input,textarea,select{font:inherit;font-size:16px;color:var(--text);background:var(--card2);border:1px solid var(--line);border-radius:var(--rs);padding:10px 12px;width:100%;outline:none}
 input:focus,textarea:focus,select:focus{border-color:var(--lime)}
 input[type=time]{color-scheme:dark}
 .num{font-family:var(--num);font-variant-numeric:tabular-nums}
@@ -41,7 +41,7 @@ input[type=time]{color-scheme:dark}
 .bottom button{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 0;border-radius:12px;color:var(--faint);font-size:11px;font-weight:600}
 .bottom button svg,.side button svg{width:22px;height:22px}
 .bottom button.on{color:var(--lime)}
-main{flex:1;min-width:0;padding:16px 16px 100px;max-width:880px;margin:0 auto;width:100%}
+main{flex:1;min-width:0;padding:calc(16px + env(safe-area-inset-top)) max(16px,env(safe-area-inset-right)) 100px max(16px,env(safe-area-inset-left));max-width:880px;margin:0 auto;width:100%}
 @media(min-width:900px){
   .side{display:flex;flex-direction:column;gap:4px;width:220px;flex-shrink:0;padding:24px 14px;border-right:1px solid var(--line);position:sticky;top:0;height:100vh;background:var(--surface)}
   .side .brand{font-family:var(--title,var(--num));font-weight:700;font-size:20px;padding:4px 12px 22px;display:flex;align-items:center;gap:8px}
@@ -56,6 +56,8 @@ main{flex:1;min-width:0;padding:16px 16px 100px;max-width:880px;margin:0 auto;wi
 .iconbtn{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:var(--card);color:var(--muted);flex-shrink:0}
 .iconbtn:hover{color:var(--text)}
 .iconbtn svg{width:19px;height:19px}
+.top .row{flex-shrink:0;gap:6px}
+.top h1{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .sync{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--faint);padding:6px 10px;border-radius:999px;background:var(--card)}
 .sync i{width:7px;height:7px;border-radius:50%;background:var(--faint)}
 .sync.ok i{background:var(--lime)}.sync.saving i{background:var(--warn)}.sync.error i,.sync.offline i{background:var(--bad)}
@@ -199,7 +201,8 @@ main{flex:1;min-width:0;padding:16px 16px 100px;max-width:880px;margin:0 auto;wi
 .ms.next b{opacity:.8;filter:grayscale(.3)}
 body[data-theme=magia]{--bg:#120E1F;--surface:#181228;--card:#211A35;--card2:#2C2346;--line:#3B3058;--lime:#F2C94C;--lime-ink:#1A1405;--lime-soft:rgba(242,201,76,.14);--h1:#3D3320;--h2:#6E5A25;--h3:#B39233;--h4:#F2C94C;--num:"Cinzel",serif;--title:"Cinzel Decorative","Cinzel",serif;--fire1:#F2C94C;--fire2:#B57CFF}
 body[data-theme=pirata]{--bg:#0A1724;--surface:#0E1F31;--card:#13293F;--card2:#1B3651;--line:#254560;--lime:#FFC93C;--lime-ink:#1A1200;--lime-soft:rgba(255,201,60,.14);--h1:#3B3417;--h2:#6F5F1F;--h3:#B8962E;--h4:#FFC93C;--num:"Bangers","Space Grotesk",sans-serif;--title:"Pirata One","Bangers",serif;--fire1:#FFD23F;--fire2:#E63946}
-body[data-theme=pirata] .top h1,body[data-theme=pirata] .modal h2{letter-spacing:.02em;font-weight:400}
+body[data-theme=pirata] .top h1,body[data-theme=pirata] .modal h2>span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.modal h2{letter-spacing:.02em;font-weight:400}
 body[data-theme=pirata] .num,body[data-theme=pirata] .kpi b,body[data-theme=pirata] .streak-big b{letter-spacing:.04em;font-weight:400}
 body[data-theme=magia] .home-hero{background:radial-gradient(120% 90% at 50% 0%,rgba(181,124,255,.22),transparent 60%),var(--card)}
 body[data-theme=pirata] .home-hero{background:radial-gradient(120% 90% at 50% 0%,rgba(60,170,230,.2),transparent 60%),var(--card)}
@@ -315,11 +318,11 @@ textarea{resize:vertical;min-height:70px}
 .mrow .ord button:disabled{opacity:.2}
 .note{font-size:13px;color:var(--muted);background:var(--card);border-radius:12px;padding:12px 14px;margin-bottom:14px;display:flex;gap:10px}
 /* modal */
-.ov{position:fixed;inset:0;background:rgba(5,6,9,.7);z-index:50;display:flex;align-items:flex-end;justify-content:center;animation:fade .15s}
+.ov{position:fixed;inset:0;height:100vh;height:100dvh;padding-top:env(safe-area-inset-top);background:rgba(5,6,9,.7);z-index:50;display:flex;align-items:flex-end;justify-content:center;animation:fade .15s}
 @media(min-width:640px){.ov{align-items:center}}
-.modal{background:var(--surface);width:100%;max-width:520px;max-height:92vh;overflow-y:auto;border-radius:20px 20px 0 0;padding:20px 18px calc(20px + env(safe-area-inset-bottom));border:1px solid var(--line);animation:up .2s}
+.modal{background:var(--surface);width:100%;max-width:520px;max-height:calc(100vh - 24px);max-height:calc(100dvh - 24px - env(safe-area-inset-top));overscroll-behavior:contain;-webkit-overflow-scrolling:touch;overflow-y:auto;border-radius:20px 20px 0 0;padding:0 18px calc(20px + env(safe-area-inset-bottom));border:1px solid var(--line);animation:up .2s}
 @media(min-width:640px){.modal{border-radius:20px}}
-.modal h2{font-family:var(--title,var(--num));font-size:20px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center}
+.modal h2{font-family:var(--title,var(--num));font-size:20px;margin:0 -18px 16px;padding:16px 18px 12px;position:sticky;top:0;z-index:5;background:var(--surface);border-bottom:1px solid var(--line);gap:10px;display:flex;justify-content:space-between;align-items:center}
 .field{margin-bottom:14px}
 .field>label{display:block;font-size:12.5px;font-weight:600;color:var(--muted);margin-bottom:6px}
 .row{display:flex;gap:8px;align-items:center}
@@ -351,6 +354,8 @@ textarea{resize:vertical;min-height:70px}
 @keyframes fade{from{opacity:0}}
 @keyframes up{from{transform:translateY(16px);opacity:0}}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+@media(max-width:430px){.sync{font-size:0!important;padding:8px!important;gap:0!important}.sync i{width:9px;height:9px}}
+@media(max-width:360px){.chart,.xlabels{gap:1px!important}.top h1{font-size:21px}.iconbtn{width:34px;height:34px}}
 </style>
 </head>
 <body>
@@ -1568,7 +1573,7 @@ function openSettings(confirmReset){
     <div class="field"><label>Tema</label>${themePicker(st.theme||'padrao','s-theme')}<div class="hint">Muda cores, letras e o mascote da página Início. Cada conta tem o seu tema.</div></div>
     <div class="field"><label>Meta do dia para manter a sequência</label><div class="chips">${[50,70,80,100].map(k=>`<button data-a="s-goal" data-v="${k}" class="${st.streakGoal===k?'on':''}">${k}%</button>`).join('')}</div><div class="hint">O dia conta para a sequência quando você cumpre pelo menos essa % dos hábitos previstos.</div></div>
     <div class="field"><label>A semana começa no</label><div class="chips">${[[1,'Segunda'],[0,'Domingo']].map(([k,l])=>`<button data-a="s-week" data-v="${k}" class="${st.weekStart===k?'on':''}">${l}</button>`).join('')}</div></div>
-    <div class="field"><label>Armazenamento</label><div class="note" style="margin:0">${modeTxt}</div></div>
+    <div class="field"><label>Armazenamento</label><div class="note" style="margin:0;display:block;line-height:1.5;word-break:break-word">${modeTxt}</div></div>
     ${Store.mode==='fb'?'<div class="field"><button class="btn sm" data-a="logout">Sair da conta</button></div>':''}
     <div class="field"><label>Backup</label><div class="row" style="flex-wrap:wrap"><button class="btn sm" data-a="s-copy">Copiar backup</button><button class="btn sm" data-a="s-import">Importar backup</button></div><div class="hint">O backup é um texto com todos os seus dados. Guarde num lugar seguro; ele também vai servir para migrar os dados para o Firebase.</div></div>
     <div class="field"><label>Zona de perigo</label>${confirmReset?`<div class="row"><button class="btn danger sm" data-a="s-reset-yes">Sim, apagar tudo</button><button class="btn sm" data-a="s-reset-no">Cancelar</button></div><div class="hint">Isso apaga todos os hábitos, checks, metas e anotações.</div>`:`<button class="btn danger sm" data-a="s-reset">Apagar todos os dados</button>`}</div>`);

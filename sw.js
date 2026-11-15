@@ -1,6 +1,6 @@
 // Service worker: deixa o app abrir rápido e funcionar offline.
 // Os dados não passam por aqui: o Firestore tem o próprio cache offline.
-const CACHE = 'habitos-v1';
+const CACHE = 'habitos-v2';
 const SHELL = ['./', './index.html', './firebase-config.js', './manifest.webmanifest',
   './icons/icon-192.png', './icons/icon-512.png', './icons/apple-touch-icon.png'];
 
