@@ -163,6 +163,40 @@ main{flex:1;min-width:0;padding:16px 16px 100px;max-width:880px;margin:0 auto;wi
 .grp{display:flex;align-items:center;gap:8px;margin-top:18px;font-size:12.5px;color:var(--faint)}
 .grp .seg{flex:1;max-width:280px}
 .grp .seg button{padding:6px 8px;font-size:12.5px}
+.home-hero{background:radial-gradient(120% 90% at 50% 0%,rgba(255,159,28,.16),transparent 60%),var(--card);border-radius:22px;padding:18px 16px 16px;text-align:center;position:relative;overflow:hidden}
+.home-hero.sad{background:radial-gradient(120% 90% at 50% 0%,rgba(120,140,170,.18),transparent 60%),var(--card)}
+.home-hero.happy{background:radial-gradient(120% 90% at 50% 0%,rgba(198,244,50,.16),transparent 60%),var(--card)}
+.bubble{display:inline-block;background:var(--text);color:var(--bg);font-weight:600;font-size:14.5px;line-height:1.35;padding:10px 14px;border-radius:16px;max-width:300px;position:relative;margin-bottom:6px}
+.bubble:after{content:"";position:absolute;left:50%;bottom:-7px;transform:translateX(-50%);border:8px solid transparent;border-top-color:var(--text);border-bottom:0}
+.mascot{width:190px;height:242px;margin:-24px auto 0;display:block}
+.mascot .sway{transform-origin:100px 150px;animation:sway 3.2s ease-in-out infinite}
+.mascot.happy .bob{animation:bob 1.6s ease-in-out infinite}
+@keyframes sway{0%,100%{transform:rotate(-2.5deg)}50%{transform:rotate(2.5deg)}}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+.streak-big{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:4px}
+.streak-big b{font-family:var(--num);font-size:64px;line-height:1;background:linear-gradient(180deg,#FFD23F,#FF7A1A);-webkit-background-clip:text;background-clip:text;color:transparent}
+.streak-big.off b{background:none;color:var(--faint)}
+.streak-big span{font-size:44px}
+.streak-lbl{font-weight:700;color:var(--muted);margin-top:2px}
+.week7{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:16px}
+.week7 div{display:flex;flex-direction:column;align-items:center;gap:5px;font-size:11.5px;color:var(--faint);font-weight:700}
+.week7 i{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-size:17px;background:var(--card2)}
+.week7 i.ok{background:linear-gradient(180deg,#FFB627,#FF7A1A);box-shadow:0 0 0 3px rgba(255,159,28,.18)}
+.week7 i.miss{background:#2A2D38;color:#6E7384;font-size:14px}
+.week7 i.today{outline:2px dashed #FF9F1C;outline-offset:2px}
+.week7 i.na{background:transparent;outline:1px dashed var(--line)}
+.goal-today{margin-top:16px;text-align:left}
+.goal-today .bar{height:12px;position:relative;overflow:visible}
+.goal-today .bar i{background:linear-gradient(90deg,#FF9F1C,#FFD23F)}
+.goal-today .bar.ok i{background:var(--lime)}
+.goal-today .mark{position:absolute;top:-4px;width:2px;height:20px;background:var(--text);border-radius:2px}
+.milestones{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px}
+.ms{flex-shrink:0;width:74px;background:var(--card2);border-radius:14px;padding:10px 6px;text-align:center;font-size:11.5px;color:var(--muted);font-weight:600}
+.ms b{display:block;font-size:24px;margin-bottom:2px;filter:grayscale(1);opacity:.45}
+.ms.got{background:var(--lime-soft);color:var(--lime)}
+.ms.got b{filter:none;opacity:1}
+.ms.next{outline:2px solid #FF9F1C;color:var(--text)}
+.ms.next b{opacity:.8;filter:grayscale(.3)}
 .toggle-more{width:100%;text-align:center;color:var(--faint);font-size:13px;padding:12px}
 /* journal */
 .moods{display:flex;gap:8px;margin:10px 0 12px}
@@ -320,6 +354,7 @@ const ICONS={
   hoje:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>',
   analises:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 6-6"/></svg>',
   metas:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>',
+  inicio:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2c1 3 4 5 4 9a4 4 0 01-8 0c0-2 1-3 1-5 1 1 2 2 3 2 0-2-1-4 0-6z"/><path d="M8.5 16.5A5 5 0 0012 22a5 5 0 003.5-5.5"/></svg>',
   habitos:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>',
   gear:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 11-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 110-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 114 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 110 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>',
   left:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>',
@@ -332,9 +367,9 @@ const ICONS={
 
 /* ============ estado ============ */
 let S={meta:null,months:{}};
-const UI={view:'hoje',date:today(),period:'month',anchor:today(),gScope:'all',gAnchor:today(),showOff:false,pendingRender:false,onboardingShown:false};
+const UI={view:'inicio',date:today(),period:'month',anchor:today(),gScope:'all',gAnchor:today(),showOff:false,pendingRender:false,onboardingShown:false};
 
-function defaultSettings(){return {weekStart:1,groupBy:'cat'}}
+function defaultSettings(){return {weekStart:1,groupBy:'area',streakGoal:80}}
 const DEFAULT_AREAS=[['saude','Saúde','💪'],['autocuidado','Autocuidado','🧴'],['mente','Mente','🧠'],['estudos','Estudos','📚'],['espiritualidade','Espiritualidade','🙏'],['financas','Finanças','💰'],['autocontrole','Autocontrole','📵'],['rotina','Rotina','⏰'],['casa','Casa','🏠']].map(([id,name,icon])=>({id,name,icon}));
 const SEED_AREA={'acordar cedo':'rotina','skincare diurna':'autocuidado','skincare noturna':'autocuidado','ler 10 páginas':'mente','sem redes sociais antes das 8h':'autocontrole','alimentação limpa / déficit calórico':'saude','não gastar sem necessidade':'financas','estudar p/ concurso':'estudos','cardio / caminhada / bike':'saude','treino academia/casa':'saude','-1h de tela (downscrolling)':'autocontrole','beber água':'saude','nofap':'autocontrole','creatina e vitaminas':'saude','planejar o dia seguinte':'rotina','dormir cedo (até 22:30)':'rotina','oração, gratidão e bíblia':'espiritualidade'};
 function areas(){return S.meta.areas||[]}
@@ -602,7 +637,7 @@ function templateHabits(names){
 }
 
 /* ============ navegação ============ */
-const VIEWS=[['hoje','Hoje'],['analises','Análises'],['metas','Metas'],['habitos','Hábitos']];
+const VIEWS=[['inicio','Início'],['hoje','Hoje'],['analises','Análises'],['metas','Metas'],['habitos','Hábitos']];
 function renderNav(){
   const b=VIEWS.map(([k,l])=>`<button data-a="nav" data-v="${k}" class="${UI.view===k?'on':''}" aria-label="${l}">${ICONS[k]}<span>${l}</span></button>`).join('');
   document.getElementById('bottom').innerHTML=b;
@@ -627,7 +662,7 @@ function render(){
   if(!S.meta)return;
   renderNav();
   const m=document.getElementById('main');
-  const fn={hoje:viewHoje,analises:viewAnalises,metas:viewMetas,habitos:viewHabitos}[UI.view];
+  const fn={inicio:viewInicio,hoje:viewHoje,analises:viewAnalises,metas:viewMetas,habitos:viewHabitos}[UI.view];
   m.innerHTML=fn();
   const s=document.getElementById('sync');if(s)paintSync(s);
   m.querySelectorAll('.hm-wrap').forEach(w=>{const t=w.querySelector('.today');if(t&&w.scrollWidth>w.clientWidth)w.scrollLeft=Math.max(0,t.offsetLeft-w.clientWidth+60)});
@@ -659,17 +694,17 @@ function viewHoje(){
     <div class="hero-stats">
       <div class="mini"><b class="num">${st.done}/${st.total}</b><span>pontos do dia</span></div>
       <div class="mini"><b class="num">${pctTxt(wk.pct)}</b><span>da semana</span></div>
-      <div class="mini" style="grid-column:1/-1"><b class="num">${perfectStreak()} ${perfectStreak()===1?'dia':'dias'}</b><span>seguidos com 100%</span></div>
+      <div class="mini" style="grid-column:1/-1;cursor:pointer" data-a="nav" data-v="inicio"><b class="num">🔥 ${streakInfo().cur} ${streakInfo().cur===1?'dia':'dias'}</b><span>de sequência (meta do dia: ${settings().streakGoal}%)</span></div>
     </div></div>`;
   if(future)html+=`<div class="note" style="margin-top:14px">📅 Dia futuro: você pode ver o que está previsto, mas os checks só abrem no dia.</div>`;
   if(alerts.length&&!future)html+=`<div class="alert"><span>⚠️</span><div><b>Não falhe 2x:</b> ${alerts.map(h=>esc(h.name)).join(', ')} ${alerts.length>1?'ficaram':'ficou'} sem check ${d===t?'ontem':'no dia anterior'}.</div></div>`;
   if(!shown.length&&!off.length){
     html+=`<div class="empty"><b>🌱</b>Nenhum hábito ativo ainda.<br><br><button class="btn pri" data-a="nav" data-v="habitos">Criar meus hábitos</button></div>`;
   }
-  const gb=settings().groupBy;
-  if(shown.length)html+=`<div class="grp">Agrupar por<div class="seg">${[['cat','Prioridade'],['area','Área']].map(([k,l])=>`<button data-a="groupby" data-v="${k}" class="${gb===k?'on':''}">${l}</button>`).join('')}</div></div>`;
-  const groups=gb==='area'?[...areas().map(a=>({key:a.id,title:`${esc(a.icon)} ${esc(a.name)}`,items:shown.filter(h=>h.area===a.id)})),{key:'',title:'Sem área',items:shown.filter(h=>!areaOf(h.area))}]
-    :['ineg','nf2'].map(cat=>({key:cat,title:`<span class="dot ${cat}"></span>${CAT[cat]}`,items:shown.filter(h=>catOf(h,d)===cat)}));
+  const gb='area';
+  if(shown.length)html+=`<div class="legend" style="margin:18px 4px 0"><span><i class="dot ineg"></i>Inegociável</span><span><i class="dot nf2"></i>Não falhar 2x</span></div>`;
+  const byCat=(a,b)=>(catOf(a,d)==='ineg'?0:1)-(catOf(b,d)==='ineg'?0:1)||a.order-b.order;
+  const groups=[...areas().map(a=>({key:a.id,title:`${esc(a.icon)} ${esc(a.name)}`,items:shown.filter(h=>h.area===a.id).sort(byCat)})),{key:'',title:'Sem área',items:shown.filter(h=>!areaOf(h.area)).sort(byCat)}];
   for(const g of groups){
     if(!g.items.length)continue;
     const dn=g.items.filter(h=>isDone(h,d)).length;
@@ -686,6 +721,83 @@ function viewHoje(){
     <div class="moods">${MOODS.map((m,i)=>`<button data-a="mood" data-n="${i+1}" class="${j.mood===i+1?'on':''}" aria-label="Humor ${i+1}" ${future?'disabled':''}>${m}</button>`).join('')}</div>
     <textarea data-in="note" placeholder="Anotações do dia (opcional)" ${future?'disabled':''}>${esc(j.note||'')}</textarea>
   </div>`;
+  return html;
+}
+function dayOK(d){const s=dayStats(d);return s.total>0&&s.pct*100>=settings().streakGoal-1e-9}
+function streakInfo(){
+  const t=today(),f=firstDate();let cur=0,d=t;const todayOK=dayOK(t);
+  if(!todayOK)d=addDays(t,-1);
+  for(let i=0;i<1000&&d>=f;i++){const s=dayStats(d);if(!s.total){d=addDays(d,-1);continue}if(dayOK(d)){cur++;d=addDays(d,-1)}else break}
+  let best=0,run=0;for(let x=f,i=0;x<=t&&i<1500;x=addDays(x,1),i++){const s=dayStats(x);if(!s.total)continue;if(dayOK(x)){run++;best=Math.max(best,run)}else if(x!==t)run=0}
+  // a sequência acabou de quebrar? (ontem falhou e antes havia sequência)
+  let lost=0;const y=addDays(t,-1);
+  if(!cur&&y>=f&&dayStats(y).total&&!dayOK(y)){let k=addDays(y,-1);for(let i=0;i<1000&&k>=f;i++){const s=dayStats(k);if(!s.total){k=addDays(k,-1);continue}if(dayOK(k)){lost++;k=addDays(k,-1)}else break}}
+  return {cur,best,todayOK,lost,today:dayStats(t)};
+}
+const STAGES=[{n:0,name:'Semente',e:'🌰'},{n:1,name:'Broto',e:'🌱'},{n:3,name:'Mudinha',e:'🌿'},{n:7,name:'Planta',e:'🪴'},{n:14,name:'Florida',e:'🌸'},{n:30,name:'Árvore',e:'🌳'},{n:60,name:'Frutífera',e:'🍎'},{n:100,name:'Lendária',e:'🌟'}];
+function stageOf(n){let i=0;STAGES.forEach((s,k)=>{if(n>=s.n)i=k});return i}
+function plantSvg(stage,mood){
+  const sad=mood==='sad',leaf=sad?'#8C9A6A':'#4CC66B',leaf2=sad?'#76845A':'#2FA84F';
+  const L=(x,y,r,flip)=>{const sz=13+r,ang=sad?(flip?-150:-30)+(flip?-25:25):(flip?-150:-30);return `<g transform="translate(${x} ${y}) rotate(${ang})"><ellipse cx="${sz}" cy="0" rx="${sz}" ry="${sz*0.45}" fill="${flip?leaf2:leaf}"/><path d="M2 0 H${sz*1.7}" stroke="${sad?'#6B7850':'#249342'}" stroke-width="1.4" opacity=".6"/></g>`};
+  const flower=(x,y,c)=>`<g transform="translate(${x} ${y})">${[0,72,144,216,288].map(a=>`<ellipse cx="0" cy="-7" rx="5" ry="8" fill="${sad?'#B9A0AA':c}" transform="rotate(${a})"/>`).join('')}<circle r="4.5" fill="#FFD23F"/></g>`;
+  let p='';
+  const stemH=[0,26,44,62,72,84,90,96][stage];
+  if(stage===0){p=`<ellipse cx="100" cy="118" rx="9" ry="7" fill="#9B6A43"/><path d="M100 112 q2 -8 7 -10" stroke="${leaf}" stroke-width="3" fill="none" stroke-linecap="round"/>`}
+  else{
+    p+=`<path d="M100 122 Q${sad?112:100} ${122-stemH/2} ${sad?110:100} ${122-stemH}" stroke="${leaf2}" stroke-width="${stage>=5?8:4}" fill="none" stroke-linecap="round"/>`;
+    const top=122-stemH;
+    if(stage>=5){p+=`<circle cx="100" cy="${top-6}" r="40" fill="${leaf2}"/><circle cx="78" cy="${top+6}" r="26" fill="${leaf}"/><circle cx="122" cy="${top+6}" r="26" fill="${leaf}"/><circle cx="100" cy="${top-20}" r="26" fill="${leaf}"/>`}
+    const n=Math.min(stage,4);for(let i=0;i<n;i++){const y=122-12-i*(stemH/ (n+0.5));p+=L(100,y,i*2,i%2===1)}
+    if(stage<5)p+=L(100,top+6,2,false)+L(100,top+6,2,true);
+    if(stage===4)p+=flower(100,top-4,'#FF6FA8')+flower(76,top+18,'#FF8FC0');
+    if(stage>=5)p+=flower(84,top-18,'#FF6FA8')+flower(118,top-4,'#FF8FC0')+flower(96,top+14,'#FF6FA8');
+    if(stage>=6)p+=`<circle cx="70" cy="${top+10}" r="7" fill="#FF4D4D"/><circle cx="128" cy="${top+16}" r="7" fill="#FF4D4D"/>`;
+    if(stage>=7)p+=`<text x="148" y="${top-24}" font-size="18">✨</text><text x="40" y="${top-10}" font-size="14">✨</text>`;
+  }
+  const eyeY=158;
+  const face=sad?`<path d="M80 ${eyeY} q5 -5 10 0 M110 ${eyeY} q5 -5 10 0" stroke="#3B1F12" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M90 178 q10 -8 20 0" stroke="#3B1F12" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M83 ${eyeY+6} q-3 8 0 12 q3 -4 0 -12z" fill="#7FC8FF"/>`
+    :mood==='worried'?`<circle cx="86" cy="${eyeY}" r="4.5" fill="#3B1F12"/><circle cx="114" cy="${eyeY}" r="4.5" fill="#3B1F12"/><path d="M78 ${eyeY-6} l12 -5 M122 ${eyeY-6} l-12 -5" stroke="#3B1F12" stroke-width="2.5" stroke-linecap="round"/><ellipse cx="100" cy="176" rx="6" ry="5" fill="#3B1F12"/><path d="M132 140 q4 7 0 11 q-4 -4 0 -11z" fill="#7FC8FF"/>`
+    :`<path d="M80 ${eyeY+2} q6 -8 12 0 M108 ${eyeY+2} q6 -8 12 0" stroke="#3B1F12" stroke-width="3.2" fill="none" stroke-linecap="round"/><path d="M88 170 q12 14 24 0z" fill="#3B1F12"/><circle cx="76" cy="170" r="6" fill="#FF8FA3" opacity=".7"/><circle cx="124" cy="170" r="6" fill="#FF8FA3" opacity=".7"/>`;
+  return `<svg class="mascot ${mood}" viewBox="0 -45 200 255" aria-hidden="true"><ellipse cx="100" cy="203" rx="52" ry="6" fill="#000" opacity=".25"/>
+    <g class="bob"><g class="sway">${p}</g>
+    <path d="M58 132 h84 l-10 68 h-64z" fill="${sad?'#B07A60':'#E07A4F'}"/><rect x="52" y="120" width="96" height="18" rx="6" fill="${sad?'#C08A70':'#F08A5D'}"/><ellipse cx="100" cy="122" rx="44" ry="4" fill="#6B4226" opacity=".55"/>${face}</g></svg>`;
+}
+function viewInicio(){
+  const si=streakInfo(),t=today(),goal=settings().streakGoal,st=si.today;
+  const hasHabits=activeHabits().length>0;
+  const mood=!hasHabits?'happy':si.todayOK?'happy':(si.cur>0?'worried':(si.lost>0?'sad':'worried'));
+  const stage=stageOf(si.cur),S0=STAGES[stage],nextS=STAGES[stage+1];
+  const pct=st.pct==null?0:Math.round(st.pct*100);
+  const need=st.total?Math.max(0,Math.ceil(goal/100*st.total-1e-9)-st.done):0;
+  const now=new Date(),hLeft=23-now.getHours(),mLeft=59-now.getMinutes();
+  let msg;
+  if(!hasHabits)msg='Oi! Eu cresço quando você cumpre seus hábitos. Vamos escolher alguns? 🌱';
+  else if(si.todayOK)msg=si.cur>1?`Você me regou hoje! 💚 ${si.cur} dias seguidos, que orgulho!`:'Primeiro dia concluído! 💚 Volte amanhã para eu crescer.';
+  else if(si.cur>0)msg=`Faltam ${need} ${need===1?'hábito':'hábitos'} para manter nossos ${si.cur} ${si.cur===1?'dia':'dias'}! Não me deixa murchar 🥺`;
+  else if(si.lost>0)msg=`Ah não… perdemos a sequência de ${si.lost} ${si.lost===1?'dia':'dias'} 😢 Bora recomeçar hoje?`;
+  else msg=`Complete ${need} ${need===1?'hábito':'hábitos'} hoje para começar nossa sequência! 🌱`;
+  // semana
+  const ws=weekStartOf(t),days=[];
+  for(let i=0;i<7;i++){const d=addDays(ws,i),dd=dow(d);let c='',ic='';
+    if(d>t){c='na'}else{const s=dayStats(d);if(!s.total||d<firstDate()){c='na'}else if(dayOK(d)){c='ok';ic='🔥'}else if(d===t){c='today'}else{c='miss';ic='✕'}}
+    if(d===t&&c!=='ok')c+=' today';
+    days.push(`<div><i class="${c}">${ic}</i>${DOW[dd].slice(0,3)}</div>`)}
+  let html=topBar('Início');
+  html+=`<div class="home-hero ${mood}">
+    <div class="bubble">${msg}</div>
+    ${plantSvg(stage,mood)}
+    <div class="streak-big ${si.cur?'':'off'}"><span>${si.cur?'🔥':'🌑'}</span><b>${si.cur}</b></div>
+    <div class="streak-lbl">${si.cur===1?'dia de sequência':'dias de sequência'} · recorde ${si.best}</div>
+    <div class="week7">${days.join('')}</div>
+    ${hasHabits?`<div class="goal-today"><div class="row" style="justify-content:space-between;font-size:13px;margin-bottom:8px"><span class="muted">Hoje: <b style="color:var(--text)">${pct}%</b> · ${st.done}/${st.total} hábitos</span><span class="muted">meta ${goal}%</span></div>
+      <div class="bar ${si.todayOK?'ok':''}"><i style="width:${Math.min(100,pct)}%"></i><span class="mark" style="left:calc(${goal}% - 1px)"></span></div>
+      ${si.todayOK?'<div class="hint" style="margin-top:8px;color:var(--lime)">✓ Sequência de hoje garantida. Continue para bater 100%!</div>':`<div class="hint" style="margin-top:8px">⏳ ${hLeft}h${pad(mLeft)} para o dia acabar</div>`}</div>`:''}
+    <button class="btn pri full" style="margin-top:16px;padding:14px" data-a="nav" data-v="${hasHabits?'hoje':'habitos'}">${hasHabits?(si.todayOK?'Ver meus hábitos de hoje':'Marcar hábitos de hoje'):'Criar meus hábitos'}</button>
+  </div>`;
+  html+=`<div class="section-t">Sua planta: ${S0.e} ${S0.name}${nextS?`<span style="margin-left:auto;letter-spacing:0;text-transform:none;font-weight:600">faltam ${nextS.n-si.cur} ${nextS.n-si.cur===1?'dia':'dias'} para ${nextS.e}</span>`:''}</div>
+    <div class="milestones">${STAGES.slice(1).map((m,i)=>`<div class="ms ${si.best>=m.n?'got':''} ${nextS&&m.n===nextS.n?'next':''}"><b>${m.e}</b>${m.n} ${m.n===1?'dia':'dias'}</div>`).join('')}</div>`;
+  const mt=periodStats(...periodRange('month',t)),wk=periodStats(weekStartOf(t),addDays(weekStartOf(t),6));
+  html+=`<div class="kpis"><div class="kpi"><span>Esta semana</span><b>${pctTxt(wk.pct)}</b></div><div class="kpi"><span>Este mês</span><b>${pctTxt(mt.pct)}</b></div><div class="kpi"><span>Recorde</span><b>${si.best}</b><small>dias seguidos</small></div><div class="kpi"><span>Planta</span><b>${S0.e}</b><small>${S0.name}</small></div></div>`;
   return html;
 }
 function perfectStreak(){
@@ -1081,7 +1193,7 @@ function initMeta(withSeed,names){
   S.meta={v:1,habits:seed,goals:[],areas:clone(DEFAULT_AREAS),settings:Object.assign(defaultSettings(),{mig1:true,mig2:true}),createdAt:today()};
   Store.touch('meta');UI.onboardingShown=false;
   document.getElementById('modal-root').innerHTML='';
-  UI.view=seed.length?'hoje':'habitos';render();
+  UI.view=seed.length?'inicio':'habitos';render();
   if(seed.length){SETUP={ids:seed.map(h=>h.id),i:0};openHabitForm(byId(SETUP.ids[0]))}
   else openHabitForm(null);
 }
@@ -1197,6 +1309,7 @@ function openSettings(confirmReset){
   const st=settings();
   const modeTxt=Store.mode==='fb'?`Conta: <b>${esc(FB.user&&(FB.user.email||FB.user.displayName)||'')}</b>. Seus dados ficam no Firebase e sincronizam entre celular e PC.`:Store.mode==='db'?'Seus dados ficam salvos na sua conta e sincronizam entre celular e PC sempre que você abre o app pelo Claude.':'Modo local: os dados estão salvos só neste navegador. Abra o app pelo Claude, conectada à sua conta, para sincronizar entre aparelhos.';
   openModal(`${mHead('Configurações')}
+    <div class="field"><label>Meta do dia para manter a sequência</label><div class="chips">${[50,70,80,100].map(k=>`<button data-a="s-goal" data-v="${k}" class="${st.streakGoal===k?'on':''}">${k}%</button>`).join('')}</div><div class="hint">O dia conta para a sequência quando você cumpre pelo menos essa % dos hábitos previstos.</div></div>
     <div class="field"><label>A semana começa no</label><div class="chips">${[[1,'Segunda'],[0,'Domingo']].map(([k,l])=>`<button data-a="s-week" data-v="${k}" class="${st.weekStart===k?'on':''}">${l}</button>`).join('')}</div></div>
     <div class="field"><label>Armazenamento</label><div class="note" style="margin:0">${modeTxt}</div></div>
     ${Store.mode==='fb'?'<div class="field"><button class="btn sm" data-a="logout">Sair da conta</button></div>':''}
@@ -1293,6 +1406,7 @@ const A={
   'g-del':()=>{G.confirmDel=true;paintGoalForm()},
   'g-del-no':()=>{G.confirmDel=false;paintGoalForm()},
   'g-del-yes':()=>{S.meta.goals=S.meta.goals.filter(g=>g.id!==G.id);Store.touch('meta');closeModal();toast('Meta excluída')},
+  's-goal':el=>{S.meta.settings.streakGoal=Number(el.dataset.v);Store.touch('meta');openSettings(false)},
   's-week':el=>{S.meta.settings.weekStart=Number(el.dataset.v);Store.touch('meta');openSettings(false)},
   's-copy':async()=>{const txt=JSON.stringify({app:'habit-tracker',version:1,exportedAt:new Date().toISOString(),meta:S.meta,months:S.months});
     try{await navigator.clipboard.writeText(txt);toast('Backup copiado')}catch(e){showBackupText(txt)}},
