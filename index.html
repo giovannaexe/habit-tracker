@@ -12,7 +12,7 @@
 <link rel="icon" type="image/png" href="icons/icon-192.png">
 <title>Hábitos</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=Cinzel:wght@600;700&family=Cinzel+Decorative:wght@700&family=Pirata+One&family=Bangers&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#0E0F13;--surface:#15171D;--card:#1C1E26;--card2:#232631;--line:#2C2F3B;
@@ -44,7 +44,7 @@ input[type=time]{color-scheme:dark}
 main{flex:1;min-width:0;padding:16px 16px 100px;max-width:880px;margin:0 auto;width:100%}
 @media(min-width:900px){
   .side{display:flex;flex-direction:column;gap:4px;width:220px;flex-shrink:0;padding:24px 14px;border-right:1px solid var(--line);position:sticky;top:0;height:100vh;background:var(--surface)}
-  .side .brand{font-family:var(--num);font-weight:700;font-size:20px;padding:4px 12px 22px;display:flex;align-items:center;gap:8px}
+  .side .brand{font-family:var(--title,var(--num));font-weight:700;font-size:20px;padding:4px 12px 22px;display:flex;align-items:center;gap:8px}
   .side button{display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:12px;color:var(--muted);font-weight:600;text-align:left}
   .side button:hover{background:var(--card)}
   .side button.on{background:var(--lime-soft);color:var(--lime)}
@@ -52,7 +52,7 @@ main{flex:1;min-width:0;padding:16px 16px 100px;max-width:880px;margin:0 auto;wi
   main{padding:28px 32px 48px}
 }
 .top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:16px}
-.top h1{font-family:var(--num);font-size:24px;font-weight:700;letter-spacing:-.01em}
+.top h1{font-family:var(--title,var(--num));font-size:24px;font-weight:700;letter-spacing:-.01em}
 .iconbtn{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:var(--card);color:var(--muted);flex-shrink:0}
 .iconbtn:hover{color:var(--text)}
 .iconbtn svg{width:19px;height:19px}
@@ -174,14 +174,14 @@ main{flex:1;min-width:0;padding:16px 16px 100px;max-width:880px;margin:0 auto;wi
 @keyframes sway{0%,100%{transform:rotate(-2.5deg)}50%{transform:rotate(2.5deg)}}
 @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
 .streak-big{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:4px}
-.streak-big b{font-family:var(--num);font-size:64px;line-height:1;background:linear-gradient(180deg,#FFD23F,#FF7A1A);-webkit-background-clip:text;background-clip:text;color:transparent}
+.streak-big b{font-family:var(--num);font-size:64px;line-height:1;background:linear-gradient(180deg,var(--fire1,#FFD23F),var(--fire2,#FF7A1A));-webkit-background-clip:text;background-clip:text;color:transparent}
 .streak-big.off b{background:none;color:var(--faint)}
 .streak-big span{font-size:44px}
 .streak-lbl{font-weight:700;color:var(--muted);margin-top:2px}
 .week7{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:16px}
 .week7 div{display:flex;flex-direction:column;align-items:center;gap:5px;font-size:11.5px;color:var(--faint);font-weight:700}
 .week7 i{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-size:17px;background:var(--card2)}
-.week7 i.ok{background:linear-gradient(180deg,#FFB627,#FF7A1A);box-shadow:0 0 0 3px rgba(255,159,28,.18)}
+.week7 i.ok{background:linear-gradient(180deg,var(--fire1,#FFB627),var(--fire2,#FF7A1A));box-shadow:0 0 0 3px rgba(255,159,28,.18)}
 .week7 i.miss{background:#2A2D38;color:#6E7384;font-size:14px}
 .week7 i.today{outline:2px dashed #FF9F1C;outline-offset:2px}
 .week7 i.na{background:transparent;outline:1px dashed var(--line)}
@@ -197,6 +197,18 @@ main{flex:1;min-width:0;padding:16px 16px 100px;max-width:880px;margin:0 auto;wi
 .ms.got b{filter:none;opacity:1}
 .ms.next{outline:2px solid #FF9F1C;color:var(--text)}
 .ms.next b{opacity:.8;filter:grayscale(.3)}
+body[data-theme=magia]{--bg:#120E1F;--surface:#181228;--card:#211A35;--card2:#2C2346;--line:#3B3058;--lime:#F2C94C;--lime-ink:#1A1405;--lime-soft:rgba(242,201,76,.14);--h1:#3D3320;--h2:#6E5A25;--h3:#B39233;--h4:#F2C94C;--num:"Cinzel",serif;--title:"Cinzel Decorative","Cinzel",serif;--fire1:#F2C94C;--fire2:#B57CFF}
+body[data-theme=pirata]{--bg:#0A1724;--surface:#0E1F31;--card:#13293F;--card2:#1B3651;--line:#254560;--lime:#FFC93C;--lime-ink:#1A1200;--lime-soft:rgba(255,201,60,.14);--h1:#3B3417;--h2:#6F5F1F;--h3:#B8962E;--h4:#FFC93C;--num:"Bangers","Space Grotesk",sans-serif;--title:"Pirata One","Bangers",serif;--fire1:#FFD23F;--fire2:#E63946}
+body[data-theme=pirata] .top h1,body[data-theme=pirata] .modal h2{letter-spacing:.02em;font-weight:400}
+body[data-theme=pirata] .num,body[data-theme=pirata] .kpi b,body[data-theme=pirata] .streak-big b{letter-spacing:.04em;font-weight:400}
+body[data-theme=magia] .home-hero{background:radial-gradient(120% 90% at 50% 0%,rgba(181,124,255,.22),transparent 60%),var(--card)}
+body[data-theme=pirata] .home-hero{background:radial-gradient(120% 90% at 50% 0%,rgba(60,170,230,.2),transparent 60%),var(--card)}
+.themes{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.themes button{background:var(--card2);border:2px solid transparent;border-radius:16px;padding:12px 6px;display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--text)}
+.themes button b{font-size:26px}
+.themes button span{font-size:13px;font-weight:700}
+.themes button small{font-size:11px;color:var(--muted)}
+.themes button.on{border-color:var(--lime);background:var(--lime-soft)}
 .toggle-more{width:100%;text-align:center;color:var(--faint);font-size:13px;padding:12px}
 /* journal */
 .moods{display:flex;gap:8px;margin:10px 0 12px}
@@ -284,7 +296,7 @@ textarea{resize:vertical;min-height:70px}
 @media(min-width:640px){.ov{align-items:center}}
 .modal{background:var(--surface);width:100%;max-width:520px;max-height:92vh;overflow-y:auto;border-radius:20px 20px 0 0;padding:20px 18px calc(20px + env(safe-area-inset-bottom));border:1px solid var(--line);animation:up .2s}
 @media(min-width:640px){.modal{border-radius:20px}}
-.modal h2{font-family:var(--num);font-size:20px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center}
+.modal h2{font-family:var(--title,var(--num));font-size:20px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center}
 .field{margin-bottom:14px}
 .field>label{display:block;font-size:12.5px;font-weight:600;color:var(--muted);margin-bottom:6px}
 .row{display:flex;gap:8px;align-items:center}
@@ -660,6 +672,7 @@ document.addEventListener('focusout',()=>{setTimeout(()=>{if(UI.pendingRender){c
 
 function render(){
   if(!S.meta)return;
+  applyTheme();
   renderNav();
   const m=document.getElementById('main');
   const fn={inicio:viewInicio,hoje:viewHoje,analises:viewAnalises,metas:viewMetas,habitos:viewHabitos}[UI.view];
@@ -694,7 +707,7 @@ function viewHoje(){
     <div class="hero-stats">
       <div class="mini"><b class="num">${st.done}/${st.total}</b><span>pontos do dia</span></div>
       <div class="mini"><b class="num">${pctTxt(wk.pct)}</b><span>da semana</span></div>
-      <div class="mini" style="grid-column:1/-1;cursor:pointer" data-a="nav" data-v="inicio"><b class="num">🔥 ${streakInfo().cur} ${streakInfo().cur===1?'dia':'dias'}</b><span>de sequência (meta do dia: ${settings().streakGoal}%)</span></div>
+      <div class="mini" style="grid-column:1/-1;cursor:pointer" data-a="nav" data-v="inicio"><b class="num">${theme().fire} ${streakInfo().cur}</b><span>${streakInfo().cur===1?theme().lbl[0]:theme().lbl[1]} (meta ${settings().streakGoal}%)</span></div>
     </div></div>`;
   if(future)html+=`<div class="note" style="margin-top:14px">📅 Dia futuro: você pode ver o que está previsto, mas os checks só abrem no dia.</div>`;
   if(alerts.length&&!future)html+=`<div class="alert"><span>⚠️</span><div><b>Não falhe 2x:</b> ${alerts.map(h=>esc(h.name)).join(', ')} ${alerts.length>1?'ficaram':'ficou'} sem check ${d===t?'ontem':'no dia anterior'}.</div></div>`;
@@ -734,6 +747,71 @@ function streakInfo(){
   if(!cur&&y>=f&&dayStats(y).total&&!dayOK(y)){let k=addDays(y,-1);for(let i=0;i<1000&&k>=f;i++){const s=dayStats(k);if(!s.total){k=addDays(k,-1);continue}if(dayOK(k)){lost++;k=addDays(k,-1)}else break}}
   return {cur,best,todayOK,lost,today:dayStats(t)};
 }
+const THEMES={
+  padrao:{name:'Padrão',icon:'🌱',desc:'Plantinha',pet:'Sua planta',petShort:'Planta',fire:'🔥',lbl:['dia de sequência','dias de sequência'],
+    stages:[[0,'Semente','🌰'],[1,'Broto','🌱'],[3,'Mudinha','🌿'],[7,'Planta','🪴'],[14,'Florida','🌸'],[30,'Árvore','🌳'],[60,'Frutífera','🍎'],[100,'Lendária','🌟']],
+    msg:{empty:'Oi! Eu cresço quando você cumpre seus hábitos. Vamos escolher alguns? 🌱',happy1:'Primeiro dia concluído! 💚 Volte amanhã para eu crescer.',happy:'Você me regou hoje! 💚 {n} dias seguidos, que orgulho!',worried:'Faltam {need} para manter nossos {n}! Não me deixa murchar 🥺',lost:'Ah não… perdemos a sequência de {lost} 😢 Bora recomeçar hoje?',start:'Complete {need} hoje para começar nossa sequência! 🌱',done:'Sequência de hoje garantida. Continue para bater 100%!'}},
+  magia:{name:'Magia',icon:'🪄',desc:'Dragão',pet:'Seu dragão',petShort:'Dragão',fire:'✨',lbl:['dia de magia seguido','dias de magia seguidos'],
+    stages:[[0,'Ovo encantado','🥚'],[1,'Eclodindo','🐣'],[3,'Filhote','🐲'],[7,'Alado','🪽'],[14,'Chifrudo','🔮'],[30,'Cospe-fogo','🔥'],[60,'Dragão real','👑'],[100,'Ancestral','🌌']],
+    msg:{empty:'Sou seu dragão! Eu cresço a cada dia em que você cumpre seus hábitos ✨',happy1:'Seu primeiro feitiço deu certo! ✨ Volte amanhã para eu crescer.',happy:'Seus feitiços de hoje me fortaleceram! ✨ {n} dias de magia!',worried:'Faltam {need} para manter a magia de {n}! Minha chama está fraquejando 🥺',lost:'Oh não… a magia se apagou depois de {lost} 😢 Vamos reacender hoje?',start:'Complete {need} hoje para chocar meu ovo! 🥚',done:'Magia de hoje garantida! Continue para chegar a 100%.'}},
+  pirata:{name:'Pirata',icon:'🏴‍☠️',desc:'Tesouro',pet:'Seu tesouro',petShort:'Tesouro',fire:'🪙',lbl:['dia de aventura','dias de aventura'],
+    stages:[[0,'Baú vazio','📦'],[1,'Primeira moeda','🪙'],[3,'Bolsa cheia','💰'],[7,'Joias','💎'],[14,'Coroa','👑'],[30,'Transbordando','🏝️'],[60,'Mapa lendário','🗺️'],[100,'Rei dos mares','🌊']],
+    msg:{empty:'Sou seu baú do tesouro! Eu encho a cada dia em que você cumpre seus hábitos 🪙',happy1:'Primeira moeda no baú! 🪙 Volte amanhã para ganhar mais.',happy:'Mais ouro no baú! 🪙 {n} dias de aventura, que orgulho!',worried:'Faltam {need} para proteger nosso tesouro de {n}! Não deixa saquearem 🥺',lost:'Saquearam nosso baú… a aventura de {lost} acabou 😢 Bora zarpar de novo hoje?',start:'Complete {need} hoje para ganhar a primeira moeda! 🪙',done:'Tesouro de hoje garantido! Continue para chegar a 100%.'}}
+};
+function theme(){return THEMES[(S.meta&&S.meta.settings&&S.meta.settings.theme)||'padrao']||THEMES.padrao}
+function applyTheme(){const k=(S.meta&&S.meta.settings&&S.meta.settings.theme)||'padrao';if(k==='padrao')delete document.body.dataset.theme;else document.body.dataset.theme=k}
+function faceSvg(mood,cx,ey,my,ink){ink=ink||'#3B1F12';
+  if(mood==='sad')return `<path d="M${cx-20} ${ey} q5 -5 10 0 M${cx+10} ${ey} q5 -5 10 0" stroke="${ink}" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M${cx-10} ${my+4} q10 -8 20 0" stroke="${ink}" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M${cx-17} ${ey+6} q-3 8 0 12 q3 -4 0 -12z" fill="#7FC8FF"/>`;
+  if(mood==='worried')return `<circle cx="${cx-14}" cy="${ey}" r="4.5" fill="${ink}"/><circle cx="${cx+14}" cy="${ey}" r="4.5" fill="${ink}"/><path d="M${cx-22} ${ey-6} l12 -5 M${cx+22} ${ey-6} l-12 -5" stroke="${ink}" stroke-width="2.5" stroke-linecap="round"/><ellipse cx="${cx}" cy="${my+2}" rx="6" ry="5" fill="${ink}"/><path d="M${cx+32} ${ey-18} q4 7 0 11 q-4 -4 0 -11z" fill="#7FC8FF"/>`;
+  return `<path d="M${cx-20} ${ey+2} q6 -8 12 0 M${cx+8} ${ey+2} q6 -8 12 0" stroke="${ink}" stroke-width="3.2" fill="none" stroke-linecap="round"/><path d="M${cx-12} ${my-4} q12 14 24 0z" fill="${ink}"/><circle cx="${cx-24}" cy="${my-4}" r="6" fill="#FF8FA3" opacity=".7"/><circle cx="${cx+24}" cy="${my-4}" r="6" fill="#FF8FA3" opacity=".7"/>`;
+}
+function dragonSvg(stage,mood){
+  const sad=mood==='sad',body=sad?'#8F86A8':'#8E6CFF',belly=sad?'#C2BDD0':'#CDBDFF',wing=sad?'#6D6585':'#5B3FD1',gold=sad?'#B8AE8C':'#F2C94C';
+  let g='';
+  if(stage<=1){
+    g+=`<ellipse cx="100" cy="148" rx="46" ry="56" fill="${sad?'#B9B2CC':'#E9E1FF'}"/><circle cx="80" cy="120" r="7" fill="${body}" opacity=".6"/><circle cx="122" cy="170" r="9" fill="${body}" opacity=".6"/><circle cx="118" cy="112" r="5" fill="${gold}"/><circle cx="78" cy="178" r="5" fill="${gold}"/>`;
+    if(stage===1)g+=`<path d="M58 130 l12 8 l10 -10 l12 10 l10 -9 l12 10 l12 -8 l14 6" stroke="#5B3FD1" stroke-width="3" fill="none" stroke-linejoin="round"/>`;
+    g+=faceSvg(mood,100,150,172,'#2A1A55');
+    if(stage===1&&!sad)g+=`<text x="132" y="104" font-size="18">✨</text>`;
+  }else{
+    const big=stage>=5;
+    if(stage>=3){const wy=sad?18:0;g+=`<g class="sway"><path d="M70 130 q-48 -${30-wy} -52 ${10+wy} q22 -6 30 12 q10 -14 22 -6z" fill="${wing}"/><path d="M130 130 q48 -${30-wy} 52 ${10+wy} q-22 -6 -30 12 q-10 -14 -22 -6z" fill="${wing}"/></g>`;
+      if(stage>=4)g=g.replace(/q-48|q48/g,m=>m==='q-48'?'q-62':'q62')}
+    g+=`<path d="M138 178 q34 6 30 -22 q-2 14 -22 10z" fill="${body}"/>`;
+    if(big)g+=`<path d="M66 116 l8 -12 l6 12 M86 104 l8 -12 l6 12 M108 104 l8 -12 l6 12 M126 114 l8 -12 l6 12" fill="${gold}" stroke="${gold}" stroke-width="2" stroke-linejoin="round"/>`;
+    g+=`<circle cx="100" cy="152" r="${big?50:46}" fill="${body}"/><ellipse cx="100" cy="170" rx="${big?32:28}" ry="${big?28:24}" fill="${belly}"/><ellipse cx="78" cy="200" rx="12" ry="7" fill="${body}"/><ellipse cx="122" cy="200" rx="12" ry="7" fill="${body}"/>`;
+    if(stage>=4)g+=`<path d="M74 112 q-8 -22 4 -30 q-2 16 10 24z M126 112 q8 -22 -4 -30 q2 16 -10 24z" fill="${gold}"/>`;
+    g+=faceSvg(mood,100,140,160,'#1E1240');
+    if(stage>=5&&!sad)g+=`<path d="M100 170 q-8 10 0 22 q8 -12 0 -22z" fill="#FF8A3D" opacity=".0"/>`;
+    if(stage>=6)g+=`<path d="M78 98 l6 -16 l9 10 l7 -14 l7 14 l9 -10 l6 16z" fill="${gold}" stroke="#C99A1E" stroke-width="2" stroke-linejoin="round"/><circle cx="100" cy="88" r="3" fill="#FF6FA8"/>`;
+  }
+  const aura=stage>=7&&!sad?`<circle cx="100" cy="140" r="92" fill="url(#aura)"/><text x="30" y="70" font-size="16">✨</text><text x="160" y="96" font-size="14">✨</text><text x="150" y="40" font-size="12">⭐</text>`:'';
+  return `<svg class="mascot ${mood}" viewBox="0 -45 200 255" aria-hidden="true"><defs><radialGradient id="aura"><stop offset="0" stop-color="#B57CFF" stop-opacity=".45"/><stop offset="1" stop-color="#B57CFF" stop-opacity="0"/></radialGradient></defs>${aura}<ellipse cx="100" cy="207" rx="52" ry="6" fill="#000" opacity=".3"/><g class="bob">${g}</g></svg>`;
+}
+function chestSvg(stage,mood){
+  const sad=mood==='sad',wood=sad?'#7C6A5C':'#9A5B2E',wood2=sad?'#6A5A4E':'#7E4622',band=sad?'#A39C86':'#FFC93C',coin=sad?'#B5AD8E':'#FFC93C',coin2=sad?'#968E72':'#E0A81E';
+  let top='';
+  const open=stage>=1&&!sad;
+  if(open){
+    top+=`<path d="M48 128 L58 72 Q100 56 142 72 L152 128z" fill="${wood2}"/><path d="M58 72 Q100 56 142 72" stroke="${band}" stroke-width="5" fill="none"/>`;
+    const piles=[0,1,2,3,4,5,6,7][stage];const h=[0,8,16,24,30,40,44,48][stage];
+    top+=`<ellipse cx="100" cy="${128-h/2}" rx="${46}" ry="${6+h/2}" fill="${coin2}"/>`;
+    for(let i=0;i<piles*3;i++){const x=62+((i*37)%76),y=126-h+((i*13)%Math.max(8,h));top+=`<ellipse cx="${x}" cy="${y}" rx="8" ry="4" fill="${coin}" stroke="${coin2}" stroke-width="1"/>`}
+    if(stage>=3)top+=`<path d="M78 ${118-h} l7 -9 l7 9 l-7 9z" fill="#4FD1FF"/><path d="M112 ${116-h} l7 -9 l7 9 l-7 9z" fill="#FF5C8A"/><path d="M96 ${108-h} l6 -8 l6 8 l-6 8z" fill="#5CF2A0"/>`;
+    if(stage>=4)top+=`<path d="M82 ${104-h} l5 -14 l8 9 l5 -12 l5 12 l8 -9 l5 14z" fill="${band}" stroke="#C9921A" stroke-width="2" stroke-linejoin="round"/>`;
+    if(stage>=5)top+=`<ellipse cx="44" cy="196" rx="9" ry="4" fill="${coin}"/><ellipse cx="160" cy="194" rx="9" ry="4" fill="${coin}"/><ellipse cx="152" cy="200" rx="9" ry="4" fill="${coin}"/><ellipse cx="38" cy="202" rx="9" ry="4" fill="${coin}"/>`;
+    if(stage>=6)top+=`<g transform="rotate(-18 150 110)"><rect x="140" y="96" width="34" height="26" rx="3" fill="#F3E2B3"/><path d="M146 104 q8 6 14 0 q6 -6 10 4" stroke="#B5543A" stroke-width="2" fill="none" stroke-dasharray="3 2"/><text x="162" y="118" font-size="9" fill="#B5543A">✕</text></g>`;
+    if(stage>=7)top+=`<text x="30" y="70" font-size="16">✨</text><text x="160" y="66" font-size="14">✨</text>`;
+  }else{
+    top+=`<path d="M48 130 L52 104 Q100 88 148 104 L152 130z" fill="${wood2}"/><path d="M52 104 Q100 88 148 104" stroke="${band}" stroke-width="5" fill="none"/>`;
+  }
+  const glow=stage>=7&&!sad?`<circle cx="100" cy="120" r="95" fill="url(#gold)"/>`:'';
+  return `<svg class="mascot ${mood}" viewBox="0 -45 200 255" aria-hidden="true"><defs><radialGradient id="gold"><stop offset="0" stop-color="#FFC93C" stop-opacity=".4"/><stop offset="1" stop-color="#FFC93C" stop-opacity="0"/></radialGradient></defs>${glow}<ellipse cx="100" cy="207" rx="58" ry="6" fill="#000" opacity=".3"/>
+    <g class="bob">${top}<rect x="46" y="126" width="108" height="76" rx="8" fill="${wood}"/><rect x="46" y="126" width="108" height="10" fill="${band}"/><rect x="60" y="126" width="9" height="76" fill="${band}" opacity=".85"/><rect x="131" y="126" width="9" height="76" fill="${band}" opacity=".85"/>${faceSvg(mood,100,158,182,'#2B1608')}</g></svg>`;
+}
+function mascotSvg(stage,mood){const k=(S.meta&&S.meta.settings&&S.meta.settings.theme)||'padrao';return k==='magia'?dragonSvg(stage,mood):k==='pirata'?chestSvg(stage,mood):plantSvg(stage,mood)}
+function tStages(){return theme().stages.map(([n,name,e])=>({n,name,e}))}
+function tMsg(key,o){return theme().msg[key].replace(/\{(\w+)\}/g,(_,k)=>o[k])}
 const STAGES=[{n:0,name:'Semente',e:'🌰'},{n:1,name:'Broto',e:'🌱'},{n:3,name:'Mudinha',e:'🌿'},{n:7,name:'Planta',e:'🪴'},{n:14,name:'Florida',e:'🌸'},{n:30,name:'Árvore',e:'🌳'},{n:60,name:'Frutífera',e:'🍎'},{n:100,name:'Lendária',e:'🌟'}];
 function stageOf(n){let i=0;STAGES.forEach((s,k)=>{if(n>=s.n)i=k});return i}
 function plantSvg(stage,mood){
@@ -766,38 +844,39 @@ function viewInicio(){
   const si=streakInfo(),t=today(),goal=settings().streakGoal,st=si.today;
   const hasHabits=activeHabits().length>0;
   const mood=!hasHabits?'happy':si.todayOK?'happy':(si.cur>0?'worried':(si.lost>0?'sad':'worried'));
-  const stage=stageOf(si.cur),S0=STAGES[stage],nextS=STAGES[stage+1];
+  const T=theme(),STG=tStages();let stage=0;STG.forEach((x,k)=>{if(si.cur>=x.n)stage=k});const S0=STG[stage],nextS=STG[stage+1];
   const pct=st.pct==null?0:Math.round(st.pct*100);
   const need=st.total?Math.max(0,Math.ceil(goal/100*st.total-1e-9)-st.done):0;
   const now=new Date(),hLeft=23-now.getHours(),mLeft=59-now.getMinutes();
+  const H=n=>`${n} ${n===1?'hábito':'hábitos'}`,D=n=>`${n} ${n===1?'dia':'dias'}`;
   let msg;
-  if(!hasHabits)msg='Oi! Eu cresço quando você cumpre seus hábitos. Vamos escolher alguns? 🌱';
-  else if(si.todayOK)msg=si.cur>1?`Você me regou hoje! 💚 ${si.cur} dias seguidos, que orgulho!`:'Primeiro dia concluído! 💚 Volte amanhã para eu crescer.';
-  else if(si.cur>0)msg=`Faltam ${need} ${need===1?'hábito':'hábitos'} para manter nossos ${si.cur} ${si.cur===1?'dia':'dias'}! Não me deixa murchar 🥺`;
-  else if(si.lost>0)msg=`Ah não… perdemos a sequência de ${si.lost} ${si.lost===1?'dia':'dias'} 😢 Bora recomeçar hoje?`;
-  else msg=`Complete ${need} ${need===1?'hábito':'hábitos'} hoje para começar nossa sequência! 🌱`;
+  if(!hasHabits)msg=tMsg('empty',{});
+  else if(si.todayOK)msg=si.cur>1?tMsg('happy',{n:si.cur}):tMsg('happy1',{});
+  else if(si.cur>0)msg=tMsg('worried',{need:H(need),n:D(si.cur)});
+  else if(si.lost>0)msg=tMsg('lost',{lost:D(si.lost)});
+  else msg=tMsg('start',{need:H(need)});
   // semana
   const ws=weekStartOf(t),days=[];
   for(let i=0;i<7;i++){const d=addDays(ws,i),dd=dow(d);let c='',ic='';
-    if(d>t){c='na'}else{const s=dayStats(d);if(!s.total||d<firstDate()){c='na'}else if(dayOK(d)){c='ok';ic='🔥'}else if(d===t){c='today'}else{c='miss';ic='✕'}}
+    if(d>t){c='na'}else{const s=dayStats(d);if(!s.total||d<firstDate()){c='na'}else if(dayOK(d)){c='ok';ic=T.fire}else if(d===t){c='today'}else{c='miss';ic='✕'}}
     if(d===t&&c!=='ok')c+=' today';
     days.push(`<div><i class="${c}">${ic}</i>${DOW[dd].slice(0,3)}</div>`)}
   let html=topBar('Início');
   html+=`<div class="home-hero ${mood}">
     <div class="bubble">${msg}</div>
-    ${plantSvg(stage,mood)}
-    <div class="streak-big ${si.cur?'':'off'}"><span>${si.cur?'🔥':'🌑'}</span><b>${si.cur}</b></div>
-    <div class="streak-lbl">${si.cur===1?'dia de sequência':'dias de sequência'} · recorde ${si.best}</div>
+    ${mascotSvg(stage,mood)}
+    <div class="streak-big ${si.cur?'':'off'}"><span>${si.cur?T.fire:'🌑'}</span><b>${si.cur}</b></div>
+    <div class="streak-lbl">${si.cur===1?T.lbl[0]:T.lbl[1]} · recorde ${si.best}</div>
     <div class="week7">${days.join('')}</div>
     ${hasHabits?`<div class="goal-today"><div class="row" style="justify-content:space-between;font-size:13px;margin-bottom:8px"><span class="muted">Hoje: <b style="color:var(--text)">${pct}%</b> · ${st.done}/${st.total} hábitos</span><span class="muted">meta ${goal}%</span></div>
       <div class="bar ${si.todayOK?'ok':''}"><i style="width:${Math.min(100,pct)}%"></i><span class="mark" style="left:calc(${goal}% - 1px)"></span></div>
-      ${si.todayOK?'<div class="hint" style="margin-top:8px;color:var(--lime)">✓ Sequência de hoje garantida. Continue para bater 100%!</div>':`<div class="hint" style="margin-top:8px">⏳ ${hLeft}h${pad(mLeft)} para o dia acabar</div>`}</div>`:''}
+      ${si.todayOK?`<div class="hint" style="margin-top:8px;color:var(--lime)">✓ ${T.msg.done}</div>`:`<div class="hint" style="margin-top:8px">⏳ ${hLeft}h${pad(mLeft)} para o dia acabar</div>`}</div>`:''}
     <button class="btn pri full" style="margin-top:16px;padding:14px" data-a="nav" data-v="${hasHabits?'hoje':'habitos'}">${hasHabits?(si.todayOK?'Ver meus hábitos de hoje':'Marcar hábitos de hoje'):'Criar meus hábitos'}</button>
   </div>`;
-  html+=`<div class="section-t">Sua planta: ${S0.e} ${S0.name}${nextS?`<span style="margin-left:auto;letter-spacing:0;text-transform:none;font-weight:600">faltam ${nextS.n-si.cur} ${nextS.n-si.cur===1?'dia':'dias'} para ${nextS.e}</span>`:''}</div>
-    <div class="milestones">${STAGES.slice(1).map((m,i)=>`<div class="ms ${si.best>=m.n?'got':''} ${nextS&&m.n===nextS.n?'next':''}"><b>${m.e}</b>${m.n} ${m.n===1?'dia':'dias'}</div>`).join('')}</div>`;
+  html+=`<div class="section-t">${T.pet}: ${S0.e} ${S0.name}${nextS?`<span style="margin-left:auto;letter-spacing:0;text-transform:none;font-weight:600">faltam ${nextS.n-si.cur} ${nextS.n-si.cur===1?'dia':'dias'} para ${nextS.e}</span>`:''}</div>
+    <div class="milestones">${STG.slice(1).map((m,i)=>`<div class="ms ${si.best>=m.n?'got':''} ${nextS&&m.n===nextS.n?'next':''}"><b>${m.e}</b>${m.n} ${m.n===1?'dia':'dias'}</div>`).join('')}</div>`;
   const mt=periodStats(...periodRange('month',t)),wk=periodStats(weekStartOf(t),addDays(weekStartOf(t),6));
-  html+=`<div class="kpis"><div class="kpi"><span>Esta semana</span><b>${pctTxt(wk.pct)}</b></div><div class="kpi"><span>Este mês</span><b>${pctTxt(mt.pct)}</b></div><div class="kpi"><span>Recorde</span><b>${si.best}</b><small>dias seguidos</small></div><div class="kpi"><span>Planta</span><b>${S0.e}</b><small>${S0.name}</small></div></div>`;
+  html+=`<div class="kpis"><div class="kpi"><span>Esta semana</span><b>${pctTxt(wk.pct)}</b></div><div class="kpi"><span>Este mês</span><b>${pctTxt(mt.pct)}</b></div><div class="kpi"><span>Recorde</span><b>${si.best}</b><small>dias seguidos</small></div><div class="kpi"><span>${T.petShort}</span><b>${S0.e}</b><small>${S0.name}</small></div></div>`;
   return html;
 }
 function perfectStreak(){
@@ -1142,6 +1221,7 @@ function areaCard(cur){
   return `<div class="card" style="margin-top:12px"><h3>Por área <small>% no período</small></h3><div class="rank">${rows.map(x=>`<div class="rrow" data-tip="${esc(x.a.name)}: ${x.dn} de ${x.ps}"><span class="nm">${esc(x.a.icon)} ${esc(x.a.name)}</span><span class="pc">${pctTxt(x.dn/x.ps)}</span><div class="tr"><i style="width:${x.dn/x.ps*100}%;background:var(--lime)"></i></div></div>`).join('')}</div></div>`;
 }
 
+function themePicker(cur,action){return `<div class="themes">${Object.entries(THEMES).map(([k,t])=>`<button data-a="${action}" data-v="${k}" class="${cur===k?'on':''}"><b>${t.icon}</b><span style="font-family:${k==='magia'?'Cinzel Decorative,serif':k==='pirata'?'Pirata One,serif':'inherit'};font-size:${k==='padrao'?13:15}px">${t.name}</span><small>${t.desc}</small></button>`).join('')}</div>`}
 /* ============ login (Firebase) ============ */
 function renderLogin(){
   document.getElementById('modal-root').innerHTML='';
@@ -1175,11 +1255,13 @@ function openModal(html,onMount){
 function closeModal(){document.getElementById('modal-root').innerHTML='';SETUP=null;if(!S.meta&&Store.mode!=='loading'&&(Store.mode!=='fb'||FB.user)){showOnboarding();return}if(modalCleanup){modalCleanup();modalCleanup=null}if(UI.pendingRender){UI.pendingRender=false}render()}
 function mHead(t,lock){return `<h2>${t}${lock?'<span data-lock></span>':`<button class="iconbtn" data-a="mclose" aria-label="Fechar">${ICONS.x}</button>`}</h2>`}
 
-let PICK=new Set();
+let PICK=new Set(),OB_THEME='padrao';
 function showOnboarding(){
   const groups=[...DEFAULT_AREAS].map(a=>({a,items:TEMPLATES.filter(x=>x[2]===a.id)})).filter(g=>g.items.length);
   const n=PICK.size;
   openModal(`${mHead('Boas-vindas! 👋',true)}
+    <div class="section-t" style="margin-top:0">Escolha um tema</div>${themePicker(OB_THEME,'ob-theme')}
+    <div class="section-t">Escolha seus hábitos</div>
     <p class="muted" style="margin-bottom:6px;font-size:14px">Escolha os hábitos que quer incluir na sua rotina. No próximo passo você ajusta cada um (meta, frequência e prioridade).</p>
     <p class="hint" style="margin-bottom:6px">Baseado nos 50 hábitos mais acompanhados em apps de hábitos. Dá para criar outros depois.</p>
     ${groups.map(g=>`<div class="section-t" style="margin-top:16px">${esc(g.a.icon)} ${esc(g.a.name)}</div><div class="chips">${g.items.map(x=>`<button data-a="pk-tog" data-n="${esc(x[0])}" class="${PICK.has(x[0])?'on':''}">${esc(x[1])} ${esc(x[0])}</button>`).join('')}</div>`).join('')}
@@ -1190,7 +1272,7 @@ function showOnboarding(){
 }
 function initMeta(withSeed,names){
   const seed=withSeed?templateHabits(names):[];
-  S.meta={v:1,habits:seed,goals:[],areas:clone(DEFAULT_AREAS),settings:Object.assign(defaultSettings(),{mig1:true,mig2:true}),createdAt:today()};
+  S.meta={v:1,habits:seed,goals:[],areas:clone(DEFAULT_AREAS),settings:Object.assign(defaultSettings(),{mig1:true,mig2:true,theme:OB_THEME}),createdAt:today()};
   Store.touch('meta');UI.onboardingShown=false;
   document.getElementById('modal-root').innerHTML='';
   UI.view=seed.length?'inicio':'habitos';render();
@@ -1309,6 +1391,7 @@ function openSettings(confirmReset){
   const st=settings();
   const modeTxt=Store.mode==='fb'?`Conta: <b>${esc(FB.user&&(FB.user.email||FB.user.displayName)||'')}</b>. Seus dados ficam no Firebase e sincronizam entre celular e PC.`:Store.mode==='db'?'Seus dados ficam salvos na sua conta e sincronizam entre celular e PC sempre que você abre o app pelo Claude.':'Modo local: os dados estão salvos só neste navegador. Abra o app pelo Claude, conectada à sua conta, para sincronizar entre aparelhos.';
   openModal(`${mHead('Configurações')}
+    <div class="field"><label>Tema</label>${themePicker(st.theme||'padrao','s-theme')}<div class="hint">Muda cores, letras e o mascote da página Início. Cada conta tem o seu tema.</div></div>
     <div class="field"><label>Meta do dia para manter a sequência</label><div class="chips">${[50,70,80,100].map(k=>`<button data-a="s-goal" data-v="${k}" class="${st.streakGoal===k?'on':''}">${k}%</button>`).join('')}</div><div class="hint">O dia conta para a sequência quando você cumpre pelo menos essa % dos hábitos previstos.</div></div>
     <div class="field"><label>A semana começa no</label><div class="chips">${[[1,'Segunda'],[0,'Domingo']].map(([k,l])=>`<button data-a="s-week" data-v="${k}" class="${st.weekStart===k?'on':''}">${l}</button>`).join('')}</div></div>
     <div class="field"><label>Armazenamento</label><div class="note" style="margin:0">${modeTxt}</div></div>
@@ -1372,7 +1455,7 @@ const A={
   'login-email':async()=>{const[e,p]=creds();loginMsg('Entrando…');try{await FB.m.signInWithEmailAndPassword(FB.auth,e,p)}catch(x){loginErr(x)}},
   'signup-email':async()=>{const[e,p]=creds();loginMsg('Criando conta…');try{await FB.m.createUserWithEmailAndPassword(FB.auth,e,p)}catch(x){loginErr(x)}},
   'reset-pass':async()=>{const[e]=creds();if(!e)return loginErr({code:'auth/invalid-email'});try{await FB.m.sendPasswordResetEmail(FB.auth,e);loginMsg('Enviamos um link para redefinir a senha no seu e-mail.')}catch(x){loginErr(x)}},
-  logout:async()=>{Store.flushAll();await sleep(400);document.getElementById('modal-root').innerHTML='';await FB.m.signOut(FB.auth)},
+  logout:async()=>{Store.flushAll();delete document.body.dataset.theme;await sleep(400);document.getElementById('modal-root').innerHTML='';await FB.m.signOut(FB.auth)},
   groupby:el=>{S.meta.settings.groupBy=el.dataset.v;Store.touch('meta');render()},
   'f-area':el=>{F.area=el.dataset.v;paintHabitForm()},
   'g-area':el=>{G.area=el.dataset.v;paintGoalForm()},
@@ -1406,6 +1489,8 @@ const A={
   'g-del':()=>{G.confirmDel=true;paintGoalForm()},
   'g-del-no':()=>{G.confirmDel=false;paintGoalForm()},
   'g-del-yes':()=>{S.meta.goals=S.meta.goals.filter(g=>g.id!==G.id);Store.touch('meta');closeModal();toast('Meta excluída')},
+  's-theme':el=>{S.meta.settings.theme=el.dataset.v;Store.touch('meta');applyTheme();openSettings(false)},
+  'ob-theme':el=>{OB_THEME=el.dataset.v;if(OB_THEME==='padrao')delete document.body.dataset.theme;else document.body.dataset.theme=OB_THEME;document.querySelectorAll('[data-a="ob-theme"]').forEach(b=>b.classList.toggle('on',b.dataset.v===OB_THEME))},
   's-goal':el=>{S.meta.settings.streakGoal=Number(el.dataset.v);Store.touch('meta');openSettings(false)},
   's-week':el=>{S.meta.settings.weekStart=Number(el.dataset.v);Store.touch('meta');openSettings(false)},
   's-copy':async()=>{const txt=JSON.stringify({app:'habit-tracker',version:1,exportedAt:new Date().toISOString(),meta:S.meta,months:S.months});
